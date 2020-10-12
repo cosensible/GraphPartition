@@ -1,0 +1,11 @@
+/.vs/*
+/Deploy/graphs/*
+/Deploy/Simulator.exe
+/Deploy/Solver.exe
+/Deploy/Checker.exe
+/Doc/*
+/Lib/gurobi/*
+/Lib/protobuf/*
+/Simulator/x64/*
+/Solver/x64/*
+/x64/*
