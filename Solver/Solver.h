@@ -16,6 +16,7 @@
 #include <thread>
 #include <initializer_list>
 #include <memory>
+#include <unordered_set>
 
 #include "Common.h"
 #include "Utility.h"
@@ -30,13 +31,14 @@ namespace szx {
 	public:
 		struct AdjNode {
 			int adjId;   // 邻接点ID
-			int eWeight; // 边权
+			int eWgt; // 边权
 			AdjNode *next;
-			AdjNode(int id, int w, AdjNode *nx = nullptr) :adjId(id), eWeight(w), next(nx) {}
+			AdjNode(int id, int w, AdjNode *nx = nullptr) :adjId(id), eWgt(w), next(nx) {}
 		};
 		// 方案二: 用vector实现邻居集合
 		struct Node {
-			int vWeight;  // 节点权重
+			int vWgt;  // 节点权重
+			int adjWgt;
 			AdjNode *adj; // 节点邻居链表
 		};
 		struct GraphAdjList {
@@ -51,15 +53,18 @@ namespace szx {
 			void init(const List<int> &ns, const Map<std::pair<int, int>, int> &es) {
 				nodes.resize(ns.size());
 				for (int i = 0; i < nodes.size(); ++i) {
-					nodes[i].vWeight = ns[i];
+					nodes[i].vWgt = ns[i];
 				}
 				for (auto e = es.begin(); e != es.end(); ++e) {
+					// 根据邻接点ID和对应边权构造邻接点
 					AdjNode *newAdj = new AdjNode(e->first.second, e->second);
+					nodes[e->first.first].adjWgt += e->second;
+					// 将该邻接点插入邻接链表头部
 					newAdj->next = nodes[e->first.first].adj;
 					nodes[e->first.first].adj = newAdj;
-
+					// 寻找新插入节点按边权升序排序后的位置
 					AdjNode *adj = nodes[e->first.first].adj, *pos = adj;
-					while (pos->next && pos->next->eWeight > adj->eWeight) {
+					while (pos->next && pos->next->eWgt > adj->eWgt) {
 						pos = pos->next;
 					}
 					if (pos == adj) { continue; }
@@ -78,6 +83,38 @@ namespace szx {
 				}
 			}
 		};
+
+		struct BucketNode {
+			int nid;
+			BucketNode *pre;
+			BucketNode *next;
+
+			BucketNode() = default;
+			BucketNode(int id, BucketNode *pre = nullptr, BucketNode *nx = nullptr) :nid(id), pre(pre), next(nx) {}
+		};
+		struct Bucket
+		{
+			int maxGain;
+			List<BucketNode*> bucket;
+
+			Bucket() = default;
+			Bucket(int maxWgt) {
+				bucket.resize(2 * maxWgt + 1, nullptr);
+			}
+		};
+		struct BucketArr
+		{
+			List<Bucket> buckets;
+			List<List<BucketNode*>> nptrArr;
+
+			BucketArr() = default;
+			BucketArr(int partNum, int nodeNum, int maxWgt) {
+				buckets.resize(partNum, Bucket(maxWgt));
+				nptrArr.resize(nodeNum, List<BucketNode*>(partNum));
+			}
+		};
+
+		
 
 		using Dvar = MpSolver::DecisionVar;
 		using Expr = MpSolver::LinearExpr;
@@ -251,6 +288,14 @@ namespace szx {
 
 	protected:
 		void coarsenGraph();
+		List<int> initialPartition();
+		List<int> its(std::shared_ptr<GraphAdjList> pG, List<int> &curPart);
+		List<int> selectSingleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &curParts,
+			const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq);
+		List<int> selectDoubleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &curParts,
+			const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq);
+
+
 		int optimizeCosGraph(List<List<int>> &parts, double timeoutInSec = 600);
 		// 返回 gain >= bottomGain 的节点集合 highGainNodes
 		int getHighGainNodes(List<int> &highGainNodes, int bottomGain = -2);

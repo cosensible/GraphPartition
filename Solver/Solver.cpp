@@ -147,23 +147,23 @@ namespace szx {
 #pragma region Solver
 	bool Solver::solve() {
 		coarsenGraph();
-		cout << "curNodes.size = " << aux.curNodes.size() 
-			 << ", curEdges.size = " << aux.curEdges.size() << endl;
+		cout << "curNodes.size = " << aux.curNodes.size()
+			<< ", curEdges.size = " << aux.curEdges.size() << endl;
 		int obj = optimizeCosGraph(iniSolParts, 1800); // 获得初始解
 		cout << "initial solution obj = " << obj << endl;
 		if (obj < 0) return false;
-		
+
 		getHighGainNodes(aux.highGainNodes);
 		cout << "get high gain nodes finished. size = " << aux.highGainNodes.size() << endl;
 		getReservedNodes(aux.highGainNodes, aux.reservedNode);
-		cout << "get reserved  nodes finished. size = " << aux.reservedNode.size()  << endl;
+		cout << "get reserved  nodes finished. size = " << aux.reservedNode.size() << endl;
 
 		cout << "curNodes.size = " << aux.curNodes.size()
-			 << ", curEdges.size = " << aux.curEdges.size() << endl;
+			<< ", curEdges.size = " << aux.curEdges.size() << endl;
 		obj = optimizeCosGraph(aux.parts, 54000);
 		cout << "latest solution obj = " << obj << endl;
 
-		
+
 		//for (int k = 0; k < iniSolParts.size(); ++k) {
 		//	cout << "part = " << k << endl;
 		//	for (int n : iniSolParts[k]) {
@@ -260,6 +260,215 @@ namespace szx {
 		graphList.push_back(pGraph);
 	}
 
+
+	List<int> Solver::initialPartition() {
+		const auto &g = *graphList.back();
+		vector<int> initPartition(g.nodes.size());
+		vector<int> ids(g.nodes.size());
+		for (int i = 0; i < ids.size(); ++i) { ids[i] = i; }
+
+		for (int i = ids.size() - 1; i >= 0; --i) {
+			int index = rand.pick(i + 1);
+			if (i != index) {
+				swap(ids[i], ids[index]);
+			}
+		}
+		for (int i = 0; i < ids.size(); ++i) {
+			initPartition[ids[i]] = i % input.partnum();
+		}
+		return initPartition;
+	}
+
+
+	List<int> Solver::selectSingleMove(int iter, shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
+		const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq) {
+		vector<int> partWgts(input.partnum());
+		int maxPart = 0;
+		for (int i = 0; i < nodesPart.size(); ++i) {
+			partWgts[nodesPart[i]] += pG->nodes[i].vWgt;
+			if (partWgts[nodesPart[i]] > partWgts[maxPart]) { maxPart = nodesPart[i]; }
+		}
+		int randPart = rand.pick(input.partnum() - 1);
+		if (randPart >= maxPart) { randPart++; }
+
+		auto &bucket = bucketArr.buckets[randPart];
+		vector<int> cand;
+		int g = bucket.maxGain;
+		for (; g >= 0 && cand.empty(); --g) {
+			for (auto pDLNode = bucket.bucket[g]; pDLNode != nullptr; pDLNode = pDLNode->next) {
+				if (partWgts[nodesPart[pDLNode->nid]] > partWgts[randPart]) {
+					// 对目标函数有改进或未被禁忌
+					if (g > bucket.bucket.size() / 2 || iter > tabuList[randPart][pDLNode->nid]) {
+						cand.push_back(pDLNode->nid);
+					}
+				}
+			}
+		}
+		assert(!cand.empty());
+		if (g > bucket.bucket.size() / 2) {
+			int index = rand.pick(cand.size());
+			return { cand[index],randPart };
+		}
+
+		int minMvNode = cand[0];
+		for (int i = 1; i < cand.size();++i) {
+			if (mvFreq[cand[i]] < mvFreq[minMvNode]) { minMvNode = cand[i]; }
+			else if (mvFreq[cand[i]] == mvFreq[minMvNode]) {
+				//选移动后差最小的
+				int minDiff = abs(partWgts[minMvNode] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
+				int vp = nodesPart[cand[i]];
+				int vWgt = pG->nodes[cand[i]].vWgt;
+				int diff = abs(partWgts[vp] - 2 * vWgt - partWgts[randPart]);
+				if (diff < minDiff) {
+					minMvNode = cand[i];
+				}
+			}
+		}
+		return { minMvNode,randPart };
+	}
+
+	List<int> Solver::selectDoubleMove(int iter, shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
+		const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq) {
+		auto mv = selectSingleMove(iter, pG, nodesPart, tabuList, bucketArr, mvFreq);
+
+		vector<int> partWgts(input.partnum());
+		int maxPart = 0;
+		for (int i = 0; i < nodesPart.size(); ++i) {
+			partWgts[nodesPart[i]] += pG->nodes[i].vWgt;
+			if (partWgts[nodesPart[i]] > partWgts[maxPart]) { maxPart = nodesPart[i]; }
+		}
+		vector<int> leftParts;
+		for (int i = 0; i < input.partnum(); ++i) {
+			if (i != maxPart && i != mv[1]) { leftParts.push_back(i); }
+		}
+		int randPart = leftParts[rand.pick(leftParts.size())];
+
+		auto &bucket = bucketArr.buckets[randPart];
+		vector<int> cand;
+		int g = bucket.maxGain;
+		for (; g >= 0 && cand.empty(); --g) {
+			for (auto pDLNode = bucket.bucket[g]; pDLNode != nullptr; pDLNode = pDLNode->next) {
+				if (nodesPart[pDLNode->nid] != randPart && nodesPart[pDLNode->nid] != mv[1]) {
+					// 对目标函数有改进或未被禁忌
+					if (g > bucket.bucket.size() / 2 || iter > tabuList[randPart][pDLNode->nid]) {
+						cand.push_back(pDLNode->nid);
+					}
+				}
+			}
+		}
+		assert(!cand.empty());
+		if (g > bucket.bucket.size() / 2) {
+			mv.push_back(cand[rand.pick(cand.size())]);
+		}
+		else {
+			int minMvNode = cand[0];
+			for (int i = 1; i < cand.size(); ++i) {
+				if (mvFreq[cand[i]] < mvFreq[minMvNode]) { minMvNode = cand[i]; }
+				else if (mvFreq[cand[i]] == mvFreq[minMvNode]) {
+					//选移动后差最小的
+					int minDiff = abs(partWgts[minMvNode] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
+					int vp = nodesPart[cand[i]];
+					int vWgt = pG->nodes[cand[i]].vWgt;
+					int diff = abs(partWgts[vp] - 2 * vWgt - partWgts[randPart]);
+					if (diff < minDiff) {
+						minMvNode = cand[i];
+					}
+				}
+			}
+			mv.push_back(minMvNode);
+		}
+		mv.push_back(randPart);
+		return mv;
+	}
+
+
+	List<int> Solver::its(shared_ptr<GraphAdjList> pG, List<int> &nodesPart) {
+		long iterCount = 10 * input.graph().nodes_size();
+		vector<double> alpha = { 0.05,0.1,0.2,0.3 };
+
+		List<unordered_set<int>> curParts;
+		for (int i = 0; i < nodesPart.size(); ++i) {
+			curParts[nodesPart[i]].insert(i);
+		}
+
+		vector<unordered_set<int>> borNodeOfParts(input.partnum());
+		vector<vector<int>> tabuList(input.partnum(), vector<int>(pG->nodes.size()));
+		vector<int> mvFreq(pG->nodes.size());
+		int maxeWgtSum = 0;
+		for (const auto &node : pG->nodes) {
+			if (node.adjWgt > maxeWgtSum) maxeWgtSum = node.adjWgt;
+		}
+		BucketArr bucketArr(input.partnum(), pG->nodes.size(), maxeWgtSum);
+
+		List<int> bestPart = nodesPart;
+		for (int i = 0; i < pG->nodes.size(); ++i) {
+			int oldCutWgt = 0; // 节点贡献的切边权重
+			for (auto p = pG->nodes[i].adj; p != nullptr; p = p->next) {
+				if (nodesPart[p->adjId] != nodesPart[i]) { oldCutWgt += p->eWgt; }
+			}
+			for (int k = 0; k < input.partnum(); ++k) {
+				if (nodesPart[i] == k) { continue; }
+				int newCutWgt = 0;
+				for (auto p = pG->nodes[i].adj; p != nullptr; p = p->next) {
+					if (nodesPart[p->adjId] != k) { newCutWgt += p->eWgt; }
+					else { borNodeOfParts[k].insert(i); }
+				}
+
+				int gainIndex = oldCutWgt - newCutWgt + maxeWgtSum;
+				// 如果节点i不是分区k的边界节点，不用插入k对应的桶中
+				if (borNodeOfParts[k].find(i) == borNodeOfParts[k].end()) { continue; }
+				// 将节点i插入分区k对应的桶结构中
+				BucketNode *newbNode = new BucketNode(i);
+				BucketNode *pbNode = bucketArr.buckets[k].bucket[gainIndex];
+				if (bucketArr.buckets[k].maxGain < gainIndex) {
+					bucketArr.buckets[k].maxGain = gainIndex;
+				}
+				if (pbNode) { pbNode->pre = newbNode; }
+				newbNode->next = pbNode;
+				pbNode = newbNode;
+				bucketArr.nptrArr[i][k] = newbNode;
+			}
+		}
+
+		auto execMove = [&](const List<int> &mvs, int iter) {
+			for (int i = 0; i < mvs.size(); i += 2) {
+				int node = mvs[i], target = mvs[i + 1], src = nodesPart[node];
+				nodesPart[node] = target;
+				curParts[target].insert(node);
+				curParts[src].erase(node);
+				tabuList[src][node] = iter + borNodeOfParts[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
+				mvFreq[node]++;
+				borNodeOfParts[src].insert(node);
+				borNodeOfParts[target].erase(node);
+				for (auto p = pG->nodes[node].adj; p != nullptr; p = p->next) {
+					borNodeOfParts[target].insert(p->adjId);
+					auto adj = pG->nodes[p->adjId].adj;
+					while (adj && nodesPart[adj->adjId] != src) {
+						adj = adj->next;
+					}
+					if (!adj) { borNodeOfParts[src].erase(p->adjId); }
+				}
+			}
+		};
+		for (long iter = 0; iter < iterCount; ++iter) {
+			int noImprove1 = 0.005*input.graph().nodes_size(), noImprove2 = noImprove1;
+			int noImprove = noImprove1 + noImprove2;
+
+			for (int step = 0; step < noImprove;) {
+				for (int step1 = 0; step1 < noImprove1; ++step1, ++step) {
+					//if improved
+					step1 = -1; step = -1;
+				}
+				if (step >= noImprove) break;
+				for (int step2 = 0; step2 < noImprove2; ++step2, ++step) {
+					//...
+					step2 = -1; step = -1;
+				}
+			}
+			//perturbation();
+		}
+	}
+
 	// 根据curNodes和curEdges求解压缩后各节点所在分区
 	// 更新cosNodePart
 	int Solver::optimizeCosGraph(List<List<int>> &parts, double timeoutInSec) {
@@ -344,14 +553,14 @@ namespace szx {
 		for (int i = 0; i < srcNodePart.size(); ++i) {
 			int oldCutWeight = 0; // 节点贡献的切边权重
 			for (auto p = graph.nodes[i].adj; p != nullptr; p = p->next) {
-				if (srcNodePart[p->adjId] != srcNodePart[i]) { oldCutWeight += p->eWeight; }
+				if (srcNodePart[p->adjId] != srcNodePart[i]) { oldCutWeight += p->eWgt; }
 			}
 			// 考虑将当前节点移动至其他分区
 			for (int k = 0; k < input.partnum(); ++k) {
 				if (k == srcNodePart[i]) continue; // 节点原本在k区, 不考虑移动
 				int newCutWeight = 0;
 				for (auto p = graph.nodes[i].adj; p != nullptr; p = p->next) {
-					if (srcNodePart[p->adjId] != k) { newCutWeight += p->eWeight; }
+					if (srcNodePart[p->adjId] != k) { newCutWeight += p->eWgt; }
 				}
 				// 是否需要按gain排序, 以便从gain高的节点开始BFS???
 				if (oldCutWeight - newCutWeight >= bottomGain) {
