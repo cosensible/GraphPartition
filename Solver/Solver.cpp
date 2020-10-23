@@ -210,9 +210,9 @@ namespace szx {
 			auto pGraph = std::make_shared<GraphAdjList>(aux.curNodes, aux.curEdges);
 			graphList.push_back(pGraph);
 			// 用 HEM 方法求最大匹配
-			nodeMap.push_back(vector<int>());
+			nodeMap.push_back(List<int>());
 			nodeMap.back().resize(aux.curNodes.size());
-			vector<int> unmatchSet(aux.curNodes.size()); // 尚未匹配的节点集合
+			List<int> unmatchSet(aux.curNodes.size()); // 尚未匹配的节点集合
 			for (int i = 0; i < aux.curNodes.size(); ++i) { unmatchSet[i] = i; }
 			int newNodeNum = 0; // 新节点个数
 			for (; !unmatchSet.empty(); ++newNodeNum) {
@@ -242,7 +242,7 @@ namespace szx {
 			//}
 
 			// 根据最大匹配（节点映射关系）压缩图
-			vector<int> newNodes(newNodeNum);
+			List<int> newNodes(newNodeNum);
 			map<pair<int, int>, int> newEdges;
 			for (int i = 0; i < aux.curNodes.size(); ++i) {
 				newNodes[nodeMap.back()[i]] += aux.curNodes[i];
@@ -263,8 +263,8 @@ namespace szx {
 
 	List<int> Solver::initialPartition() {
 		const auto &g = *graphList.back();
-		vector<int> initPartition(g.nodes.size());
-		vector<int> ids(g.nodes.size());
+		List<int> initPartition(g.nodes.size());
+		List<int> ids(g.nodes.size());
 		for (int i = 0; i < ids.size(); ++i) { ids[i] = i; }
 
 		for (int i = ids.size() - 1; i >= 0; --i) {
@@ -281,8 +281,8 @@ namespace szx {
 
 
 	List<int> Solver::selectSingleMove(int iter, shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
-		const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq) {
-		vector<int> partWgts(input.partnum());
+		const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq) {
+		List<int> partWgts(input.partnum());
 		int maxPart = 0;
 		for (int i = 0; i < nodesPart.size(); ++i) {
 			partWgts[nodesPart[i]] += pG->nodes[i].vWgt;
@@ -291,34 +291,31 @@ namespace szx {
 		int randPart = rand.pick(input.partnum() - 1);
 		if (randPart >= maxPart) { randPart++; }
 
-		auto &bucket = bucketArr.buckets[randPart];
-		vector<int> cand;
-		int g = bucket.maxGain;
+		auto &buckets = bktStruct.bktArrList[randPart].buckets;
+		List<int> cand;
+		int g = bktStruct.bktArrList[randPart].maxGain;
 		for (; g >= 0 && cand.empty(); --g) {
-			for (auto pDLNode = bucket.bucket[g]; pDLNode != nullptr; pDLNode = pDLNode->next) {
-				if (partWgts[nodesPart[pDLNode->nid]] > partWgts[randPart]) {
+			for (auto it = buckets[g].begin(); it != buckets[g].end(); ++it) {
+				if (partWgts[nodesPart[*it]] > partWgts[randPart]) {
 					// 对目标函数有改进或未被禁忌
-					if (g > bucket.bucket.size() / 2 || iter > tabuList[randPart][pDLNode->nid]) {
-						cand.push_back(pDLNode->nid);
+					if (g > buckets.size() / 2 || iter > tabuTable[*it][randPart]) {
+						cand.push_back(*it);
 					}
 				}
 			}
 		}
 		assert(!cand.empty());
-		if (g > bucket.bucket.size() / 2) {
-			int index = rand.pick(cand.size());
-			return { cand[index],randPart };
+		if (g > buckets.size() / 2) {
+			return { cand[rand.pick(cand.size())],randPart };
 		}
 
 		int minMvNode = cand[0];
-		for (int i = 1; i < cand.size();++i) {
+		for (int i = 1; i < cand.size(); ++i) {
 			if (mvFreq[cand[i]] < mvFreq[minMvNode]) { minMvNode = cand[i]; }
 			else if (mvFreq[cand[i]] == mvFreq[minMvNode]) {
 				//选移动后差最小的
-				int minDiff = abs(partWgts[minMvNode] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
-				int vp = nodesPart[cand[i]];
-				int vWgt = pG->nodes[cand[i]].vWgt;
-				int diff = abs(partWgts[vp] - 2 * vWgt - partWgts[randPart]);
+				int minDiff = abs(partWgts[nodesPart[minMvNode]] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
+				int diff = abs(partWgts[nodesPart[cand[i]]] - 2 * pG->nodes[cand[i]].vWgt - partWgts[randPart]);
 				if (diff < minDiff) {
 					minMvNode = cand[i];
 				}
@@ -328,36 +325,36 @@ namespace szx {
 	}
 
 	List<int> Solver::selectDoubleMove(int iter, shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
-		const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq) {
-		auto mv = selectSingleMove(iter, pG, nodesPart, tabuList, bucketArr, mvFreq);
+		const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq) {
+		auto mv = selectSingleMove(iter, pG, nodesPart, tabuTable, bktStruct, mvFreq);
 
-		vector<int> partWgts(input.partnum());
+		List<int> partWgts(input.partnum());
 		int maxPart = 0;
 		for (int i = 0; i < nodesPart.size(); ++i) {
 			partWgts[nodesPart[i]] += pG->nodes[i].vWgt;
 			if (partWgts[nodesPart[i]] > partWgts[maxPart]) { maxPart = nodesPart[i]; }
 		}
-		vector<int> leftParts;
+		List<int> leftParts;
 		for (int i = 0; i < input.partnum(); ++i) {
 			if (i != maxPart && i != mv[1]) { leftParts.push_back(i); }
 		}
 		int randPart = leftParts[rand.pick(leftParts.size())];
 
-		auto &bucket = bucketArr.buckets[randPart];
-		vector<int> cand;
-		int g = bucket.maxGain;
+		auto &buckets = bktStruct.bktArrList[randPart].buckets;
+		List<int> cand;
+		int g = bktStruct.bktArrList[randPart].maxGain;
 		for (; g >= 0 && cand.empty(); --g) {
-			for (auto pDLNode = bucket.bucket[g]; pDLNode != nullptr; pDLNode = pDLNode->next) {
-				if (nodesPart[pDLNode->nid] != randPart && nodesPart[pDLNode->nid] != mv[1]) {
+			for (auto it = buckets[g].begin(); it != buckets[g].end(); ++it) {
+				if (nodesPart[*it] != mv[1]) {
 					// 对目标函数有改进或未被禁忌
-					if (g > bucket.bucket.size() / 2 || iter > tabuList[randPart][pDLNode->nid]) {
-						cand.push_back(pDLNode->nid);
+					if (g > buckets.size() / 2 || iter > tabuTable[*it][randPart]) {
+						cand.push_back(*it);
 					}
 				}
 			}
 		}
 		assert(!cand.empty());
-		if (g > bucket.bucket.size() / 2) {
+		if (g > buckets.size() / 2) {
 			mv.push_back(cand[rand.pick(cand.size())]);
 		}
 		else {
@@ -366,10 +363,8 @@ namespace szx {
 				if (mvFreq[cand[i]] < mvFreq[minMvNode]) { minMvNode = cand[i]; }
 				else if (mvFreq[cand[i]] == mvFreq[minMvNode]) {
 					//选移动后差最小的
-					int minDiff = abs(partWgts[minMvNode] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
-					int vp = nodesPart[cand[i]];
-					int vWgt = pG->nodes[cand[i]].vWgt;
-					int diff = abs(partWgts[vp] - 2 * vWgt - partWgts[randPart]);
+					int minDiff = abs(partWgts[nodesPart[minMvNode]] - 2 * pG->nodes[minMvNode].vWgt - partWgts[randPart]);
+					int diff = abs(partWgts[nodesPart[cand[i]]] - 2 * pG->nodes[cand[i]].vWgt - partWgts[randPart]);
 					if (diff < minDiff) {
 						minMvNode = cand[i];
 					}
@@ -381,75 +376,112 @@ namespace szx {
 		return mv;
 	}
 
+	int Solver::getGain(shared_ptr<GraphAdjList> pG, List<int> &nodesPart, int nid, int pid) {
+		int oldCutWgt = 0, newCutWgt = 0; // 节点被移动前后贡献的切边权重
+		for (auto p = pG->nodes[nid].adj; p; p = p->next) {
+			if (nodesPart[p->adjId] != nodesPart[nid]) { oldCutWgt += p->eWgt; }
+			if (nodesPart[p->adjId] != pid) { newCutWgt += p->eWgt; }
+		}
+		return oldCutWgt - newCutWgt;
+	}
 
+	// 待优化的划分 nodesPart 及其所在的图 pG
 	List<int> Solver::its(shared_ptr<GraphAdjList> pG, List<int> &nodesPart) {
 		long iterCount = 10 * input.graph().nodes_size();
-		vector<double> alpha = { 0.05,0.1,0.2,0.3 };
-
-		List<unordered_set<int>> curParts;
-		for (int i = 0; i < nodesPart.size(); ++i) {
-			curParts[nodesPart[i]].insert(i);
-		}
-
-		vector<unordered_set<int>> borNodeOfParts(input.partnum());
-		vector<vector<int>> tabuList(input.partnum(), vector<int>(pG->nodes.size()));
-		vector<int> mvFreq(pG->nodes.size());
-		int maxeWgtSum = 0;
-		for (const auto &node : pG->nodes) {
-			if (node.adjWgt > maxeWgtSum) maxeWgtSum = node.adjWgt;
-		}
-		BucketArr bucketArr(input.partnum(), pG->nodes.size(), maxeWgtSum);
-
+		List<double> alpha = { 0.05,0.1,0.2,0.3 };
 		List<int> bestPart = nodesPart;
-		for (int i = 0; i < pG->nodes.size(); ++i) {
-			int oldCutWgt = 0; // 节点贡献的切边权重
-			for (auto p = pG->nodes[i].adj; p != nullptr; p = p->next) {
-				if (nodesPart[p->adjId] != nodesPart[i]) { oldCutWgt += p->eWgt; }
-			}
-			for (int k = 0; k < input.partnum(); ++k) {
-				if (nodesPart[i] == k) { continue; }
-				int newCutWgt = 0;
-				for (auto p = pG->nodes[i].adj; p != nullptr; p = p->next) {
-					if (nodesPart[p->adjId] != k) { newCutWgt += p->eWgt; }
-					else { borNodeOfParts[k].insert(i); }
-				}
 
-				int gainIndex = oldCutWgt - newCutWgt + maxeWgtSum;
-				// 如果节点i不是分区k的边界节点，不用插入k对应的桶中
-				if (borNodeOfParts[k].find(i) == borNodeOfParts[k].end()) { continue; }
-				// 将节点i插入分区k对应的桶结构中
-				BucketNode *newbNode = new BucketNode(i);
-				BucketNode *pbNode = bucketArr.buckets[k].bucket[gainIndex];
-				if (bucketArr.buckets[k].maxGain < gainIndex) {
-					bucketArr.buckets[k].maxGain = gainIndex;
+		List<unordered_set<int>> curParts(input.partnum());       // 各分区包含的节点
+		List<unordered_set<int>> borNodesOfPart(input.partnum()); // 各分区相连的边界节点
+		for (int i = 0; i < nodesPart.size(); ++i) {
+			curParts[nodesPart[i]].insert(i); // i 所在分区添加 i 节点
+			for (auto pAdj = pG->nodes[i].adj; pAdj; pAdj = pAdj->next) {
+				if (nodesPart[pAdj->adjId] != nodesPart[i]) {
+					// i 的邻居和 i 不在一个分区, 该邻居为 i 所在分区的边界节点
+					borNodesOfPart[nodesPart[i]].insert(pAdj->adjId);
 				}
-				if (pbNode) { pbNode->pre = newbNode; }
-				newbNode->next = pbNode;
-				pbNode = newbNode;
-				bucketArr.nptrArr[i][k] = newbNode;
 			}
 		}
 
+		// 禁忌表, 禁止节点 v 移动到 分区 s
+		List<List<int>> tabuTable(nodesPart.size(), List<int>(input.partnum()));
+		List<int> mvFreq(nodesPart.size()); // 各节点的移动次数
+
+		int maxAdjWgt = 0; // 各节点边权和的最大值, 作为桶的最大编号
+		for (const auto &node : pG->nodes) {
+			if (node.adjWgt > maxAdjWgt) maxAdjWgt = node.adjWgt;
+		}
+		// 桶结构, 包含 k 个桶数组和一个指向桶中链表节点的迭代器的列表
+		BucketStruct bktStruct(input.partnum(), nodesPart.size(), maxAdjWgt);
+
+		// 计算各分区的边界点移动到分区中能够获得的 gain 值
+		for (int k = 0; k < borNodesOfPart.size(); ++k) {
+			for (int v : borNodesOfPart[k]) {
+				int gainIndex = getGain(pG, nodesPart, v, k) + maxAdjWgt;
+				bktStruct.insert(gainIndex, v, k);
+			}
+		}
+
+		// mvs: SingleMove 或 DoubleMove, <nid, pid>
 		auto execMove = [&](const List<int> &mvs, int iter) {
 			for (int i = 0; i < mvs.size(); i += 2) {
 				int node = mvs[i], target = mvs[i + 1], src = nodesPart[node];
 				nodesPart[node] = target;
 				curParts[target].insert(node);
 				curParts[src].erase(node);
-				tabuList[src][node] = iter + borNodeOfParts[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-				mvFreq[node]++;
-				borNodeOfParts[src].insert(node);
-				borNodeOfParts[target].erase(node);
-				for (auto p = pG->nodes[node].adj; p != nullptr; p = p->next) {
-					borNodeOfParts[target].insert(p->adjId);
-					auto adj = pG->nodes[p->adjId].adj;
-					while (adj && nodesPart[adj->adjId] != src) {
-						adj = adj->next;
+
+				// 更新 borNodesOfPart
+				borNodesOfPart[target].erase(node);
+				for (auto p = pG->nodes[node].adj; p; p = p->next) {
+					if (nodesPart[p->adjId] != target) {
+						borNodesOfPart[target].insert(p->adjId);
 					}
-					if (!adj) { borNodeOfParts[src].erase(p->adjId); }
+				}
+				borNodesOfPart[src].clear();
+				for (int v : curParts[src]) {
+					for (auto p = pG->nodes[v].adj; p; p = p->next) {
+						if (nodesPart[p->adjId] != src) {
+							borNodesOfPart[src].insert(p->adjId);
+						}
+					}
+				}
+				// 防止 node 不久后移回 src
+				tabuTable[node][src] = iter + borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
+				mvFreq[node]++;
+
+				// 更新 node 节点在桶结构中的位置
+				for (int k = 0; k < curParts.size(); ++k) {
+					if (k == target) {
+						bktStruct.remove(node, target);
+					}
+					else if (k == src && borNodesOfPart[src].find(node) != borNodesOfPart[src].end()) {
+						int gainIndex = getGain(pG, nodesPart, node, src) + maxAdjWgt;
+						bktStruct.insert(gainIndex, node, src);
+					}
+					else {
+						auto &gainPtr = bktStruct.vptrList[node][k];
+						if (gainPtr.first < 0) { continue; } // 不是分区 k 的边界点
+						int gainIndex = getGain(pG, nodesPart, node, k) + maxAdjWgt;
+						bktStruct.insert(gainIndex, node, k);
+					}
+				}
+				// 更新 node 邻接点在桶结构中的位置
+				for (auto p = pG->nodes[node].adj; p; p = p->next) {
+					for (int k = 0; k < curParts.size(); ++k) {
+						if (nodesPart[p->adjId] == k) { continue; }
+						if (borNodesOfPart[k].find(p->adjId) == borNodesOfPart[k].end()) {
+							bktStruct.remove(p->adjId, k);
+						}
+						else {
+							int gainIndex = getGain(pG, nodesPart, p->adjId, k) + maxAdjWgt;
+							bktStruct.insert(gainIndex, p->adjId, k);
+						}
+					}
 				}
 			}
 		};
+
+
 		for (long iter = 0; iter < iterCount; ++iter) {
 			int noImprove1 = 0.005*input.graph().nodes_size(), noImprove2 = noImprove1;
 			int noImprove = noImprove1 + noImprove2;
@@ -546,7 +578,7 @@ namespace szx {
 
 	int Solver::getHighGainNodes(List<int> &highGainNodes, int bottomGain) {
 		highGainNodes.clear();
-		vector<int> srcNodePart(input.graph().nodes_size()); // 原始节点所在分区
+		List<int> srcNodePart(input.graph().nodes_size()); // 原始节点所在分区
 		for (int i = 0; i < srcNodePart.size(); ++i) {
 			srcNodePart[i] = aux.cosNodePart[gidmap[i]];
 		}
@@ -573,7 +605,7 @@ namespace szx {
 	}
 
 	bool Solver::isUpperNonZero(const List<int> &reservedNodes, const List<List<int>> &parts, int upperNonZeros) {
-		vector<int> idMap(input.graph().nodes_size(), -1);
+		List<int> idMap(input.graph().nodes_size(), -1);
 		int newNodeNum = 0;
 		for (int v : reservedNodes) { idMap[v] = newNodeNum++; }
 		for (int p = 0; p < parts.size() && newNodeNum < idMap.size(); p++, newNodeNum++) {
@@ -617,7 +649,7 @@ namespace szx {
 			}
 		}
 
-		vector<bool> isVisited(input.graph().nodes_size(), false);
+		List<bool> isVisited(input.graph().nodes_size(), false);
 		queue<int> nodeQueue;
 		for (int n : reservedNodes) {
 			nodeQueue.push(n);

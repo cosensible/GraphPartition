@@ -17,6 +17,7 @@
 #include <initializer_list>
 #include <memory>
 #include <unordered_set>
+#include <list>
 
 #include "Common.h"
 #include "Utility.h"
@@ -30,15 +31,15 @@ namespace szx {
 #pragma region Type
 	public:
 		struct AdjNode {
-			int adjId;   // 邻接点ID
-			int eWgt; // 边权
+			int adjId; // 邻接点ID
+			int eWgt;  // 边权
 			AdjNode *next;
 			AdjNode(int id, int w, AdjNode *nx = nullptr) :adjId(id), eWgt(w), next(nx) {}
 		};
-		// 方案二: 用vector实现邻居集合
+
 		struct Node {
-			int vWgt;  // 节点权重
-			int adjWgt;
+			int vWgt;     // 节点权重
+			int adjWgt;   // 节点的边权和
 			AdjNode *adj; // 节点邻居链表
 		};
 		struct GraphAdjList {
@@ -84,33 +85,59 @@ namespace szx {
 			}
 		};
 
-		struct BucketNode {
-			int nid;
-			BucketNode *pre;
-			BucketNode *next;
-
-			BucketNode() = default;
-			BucketNode(int id, BucketNode *pre = nullptr, BucketNode *nx = nullptr) :nid(id), pre(pre), next(nx) {}
-		};
-		struct Bucket
-		{
-			int maxGain;
-			List<BucketNode*> bucket;
-
-			Bucket() = default;
-			Bucket(int maxWgt) {
-				bucket.resize(2 * maxWgt + 1, nullptr);
-			}
-		};
 		struct BucketArr
 		{
-			List<Bucket> buckets;
-			List<List<BucketNode*>> nptrArr;
+			int maxGain;
+			List<std::list<int>> buckets;
 
-			BucketArr() = default;
-			BucketArr(int partNum, int nodeNum, int maxWgt) {
-				buckets.resize(partNum, Bucket(maxWgt));
-				nptrArr.resize(nodeNum, List<BucketNode*>(partNum));
+			BucketArr() :maxGain(0) {}
+			BucketArr(int maxIndex) :maxGain(0), buckets(List<std::list<int>>(2 * maxIndex + 1)) {}
+		};
+		struct BucketStruct
+		{
+			List<BucketArr> bktArrList;
+
+			using GainPtr = std::pair<int, std::list<int>::iterator>;
+			List<List<GainPtr>> vptrList;
+
+			BucketStruct() = default;
+			BucketStruct(int partNum, int nodeNum, int maxIndex) :
+				bktArrList(List<BucketArr>(partNum, BucketArr(maxIndex))),
+				vptrList(List<List<GainPtr>>(nodeNum, List<GainPtr>(partNum))) {
+				for (int v = 0; v < nodeNum; ++v) {
+					for (int k = 0; k < partNum; ++k) {
+						vptrList[v][k].first = -1;
+					}
+				}
+			}
+
+			// 将节点 nid 插入分区 pid 对应的桶数组结构中
+			void insert(int gainIndex, int nid, int pid) {
+				auto &gainPtr = vptrList[nid][pid];
+				if (gainPtr.first >= 0) { // 如果已经存在
+					if (gainPtr.first == gainIndex) { return; }
+					else { remove(nid, pid); }
+				}
+				auto &buckets = bktArrList[pid].buckets;
+				auto it = buckets[gainIndex].insert(buckets[gainIndex].begin(), nid);
+				gainPtr = { gainIndex,it };
+				if (gainIndex > bktArrList[pid].maxGain) {
+					bktArrList[pid].maxGain = gainIndex;
+				}
+			}
+
+			void remove(int nid, int pid) {
+				auto &gainPtr = vptrList[nid][pid];
+				if (gainPtr.first < 0) { return; } // 已经被删除
+
+				auto &bkt = bktArrList[pid];
+				bkt.buckets[gainPtr.first].erase(gainPtr.second);
+				if (gainPtr.first == bkt.maxGain) {
+					while (bkt.maxGain > 0 && bkt.buckets[bkt.maxGain].size() == 0) {
+						--bkt.maxGain;
+					}
+				}
+				gainPtr.first = -1; // 将指向链表节点的索引置为无效值
 			}
 		};
 
@@ -289,18 +316,20 @@ namespace szx {
 	protected:
 		void coarsenGraph();
 		List<int> initialPartition();
-		List<int> its(std::shared_ptr<GraphAdjList> pG, List<int> &curPart);
-		List<int> selectSingleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &curParts,
-			const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq);
-		List<int> selectDoubleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &curParts,
-			const List<List<int>> &tabuList, const BucketArr &bucketArr, const List<int> &mvFreq);
+		int getGain(std::shared_ptr<GraphAdjList> pG, List<int> &nodesPart, int nid, int pid);
+		List<int> its(std::shared_ptr<GraphAdjList> pG, List<int> &nodesPart);
+		List<int> selectSingleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
+			const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq);
+
+		List<int> selectDoubleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
+			const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq);
 
 
 		int optimizeCosGraph(List<List<int>> &parts, double timeoutInSec = 600);
 		// 返回 gain >= bottomGain 的节点集合 highGainNodes
 		int getHighGainNodes(List<int> &highGainNodes, int bottomGain = -2);
 		// 当前被保留的节点集是否达到指定大小
-		bool isUpperNonZero(const List<int> &reservedNodes, const List<List<int>> &parts, int upperNonZeros = 1e6);
+		bool isUpperNonZero(const List<int> &reservedNodes, const List<List<int>> &parts, int upperNonZeros = 1e4);
 		// 返回不被压缩的节点集合 reservedNodes
 		int getReservedNodes(const List<int> &highGainNodes, List<int> &reservedNodes);
 
