@@ -279,7 +279,6 @@ namespace szx {
 		return initPartition;
 	}
 
-
 	List<int> Solver::selectSingleMove(int iter, shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
 		const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq) {
 		List<int> partWgts(input.partnum());
@@ -376,6 +375,8 @@ namespace szx {
 		return mv;
 	}
 
+
+
 	int Solver::getGain(shared_ptr<GraphAdjList> pG, List<int> &nodesPart, int nid, int pid) {
 		int oldCutWgt = 0, newCutWgt = 0; // 节点被移动前后贡献的切边权重
 		for (auto p = pG->nodes[nid].adj; p; p = p->next) {
@@ -422,72 +423,114 @@ namespace szx {
 			}
 		}
 
-		// mvs: SingleMove 或 DoubleMove, <nid, pid>
-		auto execMove = [&](const List<int> &mvs, int iter) {
-			for (int i = 0; i < mvs.size(); i += 2) {
-				int node = mvs[i], target = mvs[i + 1], src = nodesPart[node];
-				nodesPart[node] = target;
-				curParts[target].insert(node);
-				curParts[src].erase(node);
 
-				// 更新 borNodesOfPart
-				borNodesOfPart[target].erase(node);
-				for (auto p = pG->nodes[node].adj; p; p = p->next) {
-					if (nodesPart[p->adjId] != target) {
-						borNodesOfPart[target].insert(p->adjId);
+		// 将 node 节点从 src 分区移动到 target 分区
+		auto execMove = [&](int node, int src, int target) {
+			nodesPart[node] = target;
+			curParts[target].insert(node);
+			curParts[src].erase(node);
+
+			// 更新 borNodesOfPart
+			borNodesOfPart[target].erase(node);
+			for (auto p = pG->nodes[node].adj; p; p = p->next) {
+				if (nodesPart[p->adjId] != target) {
+					borNodesOfPart[target].insert(p->adjId);
+				}
+			}
+			borNodesOfPart[src].clear();
+			for (int v : curParts[src]) {
+				for (auto p = pG->nodes[v].adj; p; p = p->next) {
+					if (nodesPart[p->adjId] != src) {
+						borNodesOfPart[src].insert(p->adjId);
 					}
 				}
-				borNodesOfPart[src].clear();
-				for (int v : curParts[src]) {
-					for (auto p = pG->nodes[v].adj; p; p = p->next) {
-						if (nodesPart[p->adjId] != src) {
-							borNodesOfPart[src].insert(p->adjId);
-						}
-					}
-				}
-				// 防止 node 不久后移回 src
-				tabuTable[node][src] = iter + borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-				mvFreq[node]++;
+			}
 
-				// 更新 node 节点在桶结构中的位置
+			// 更新 node 节点在桶结构中的位置
+			for (int k = 0; k < curParts.size(); ++k) {
+				if (k == target) {
+					bktStruct.remove(node, target);
+				}
+				else if (k == src && borNodesOfPart[src].find(node) != borNodesOfPart[src].end()) {
+					int gainIndex = getGain(pG, nodesPart, node, src) + maxAdjWgt;
+					bktStruct.insert(gainIndex, node, src);
+				}
+				else {
+					auto &gainPtr = bktStruct.vptrList[node][k];
+					if (gainPtr.first < 0) { continue; } // 不是分区 k 的边界点
+					int gainIndex = getGain(pG, nodesPart, node, k) + maxAdjWgt;
+					bktStruct.insert(gainIndex, node, k);
+				}
+			}
+			// 更新 node 邻接点在桶结构中的位置
+			for (auto p = pG->nodes[node].adj; p; p = p->next) {
 				for (int k = 0; k < curParts.size(); ++k) {
-					if (k == target) {
-						bktStruct.remove(node, target);
-					}
-					else if (k == src && borNodesOfPart[src].find(node) != borNodesOfPart[src].end()) {
-						int gainIndex = getGain(pG, nodesPart, node, src) + maxAdjWgt;
-						bktStruct.insert(gainIndex, node, src);
+					if (nodesPart[p->adjId] == k) { continue; }
+					if (borNodesOfPart[k].find(p->adjId) == borNodesOfPart[k].end()) {
+						bktStruct.remove(p->adjId, k);
 					}
 					else {
-						auto &gainPtr = bktStruct.vptrList[node][k];
-						if (gainPtr.first < 0) { continue; } // 不是分区 k 的边界点
-						int gainIndex = getGain(pG, nodesPart, node, k) + maxAdjWgt;
-						bktStruct.insert(gainIndex, node, k);
-					}
-				}
-				// 更新 node 邻接点在桶结构中的位置
-				for (auto p = pG->nodes[node].adj; p; p = p->next) {
-					for (int k = 0; k < curParts.size(); ++k) {
-						if (nodesPart[p->adjId] == k) { continue; }
-						if (borNodesOfPart[k].find(p->adjId) == borNodesOfPart[k].end()) {
-							bktStruct.remove(p->adjId, k);
-						}
-						else {
-							int gainIndex = getGain(pG, nodesPart, p->adjId, k) + maxAdjWgt;
-							bktStruct.insert(gainIndex, p->adjId, k);
-						}
+						int gainIndex = getGain(pG, nodesPart, p->adjId, k) + maxAdjWgt;
+						bktStruct.insert(gainIndex, p->adjId, k);
 					}
 				}
 			}
 		};
 
+		auto perturbation = [&]() {
+			int ptbWgt = 0.02 * input.graph().nodes_size();
+			for (int t = 0; t < ptbWgt; ++t) {
+				List<int> partWgts(input.partnum());
+				int maxPart = 0;
+				for (int i = 0; i < nodesPart.size(); ++i) {
+					partWgts[nodesPart[i]] += pG->nodes[i].vWgt;
+					if (partWgts[nodesPart[i]] > partWgts[maxPart]) { maxPart = nodesPart[i]; }
+				}
+				int randPart = rand.pick(input.partnum() - 1);
+				if (randPart >= maxPart) { randPart++; }
 
+				List<int> highPart;
+				for (int i = 0; i < input.partnum(); ++i) {
+					if (partWgts[i] > partWgts[randPart]) { highPart.push_back(i); }
+				}
+
+				//int srcPart = highPart[rand.pick(highPart.size())];
+				//assert(!curParts[srcPart].empty());
+				//auto it = curParts[srcPart].begin();
+				//int randNode = *(it++);
+				//for (int i=1; it != curParts[srcPart].end(); ++it,++i) {
+				//	int r = rand.pick(i + 1);
+				//	if (r == 0) { randNode = *it; }
+				//}
+
+				assert(!highPart.empty());
+				int srcPart = highPart[0], randNode = -1, i = 0;
+				for (int p : highPart) {
+					for (auto it = curParts[p].begin(); it != curParts[p].end(); ++it, ++i) {
+						int r = rand.pick(i + 1);
+						if (r == 0) { randNode = *it; }
+					}
+				}
+
+				execMove(randNode, srcPart, randPart);
+			}
+		};
+
+		// 迭代禁忌搜索 N1-N2 token-ring
 		for (long iter = 0; iter < iterCount; ++iter) {
 			int noImprove1 = 0.005*input.graph().nodes_size(), noImprove2 = noImprove1;
 			int noImprove = noImprove1 + noImprove2;
 
 			for (int step = 0; step < noImprove;) {
 				for (int step1 = 0; step1 < noImprove1; ++step1, ++step) {
+					List<int> singleMv = selectSingleMove(iter, pG, nodesPart, tabuTable, bktStruct, mvFreq);
+					for (int i = 0; i < singleMv.size(); i += 2) {
+						int node = singleMv[i], target = singleMv[i + 1], src = nodesPart[node];
+						execMove(node, src, target);
+						// 防止 node 不久后移回 src
+						tabuTable[node][src] = iter + borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
+						mvFreq[node]++;
+					}
 					//if improved
 					step1 = -1; step = -1;
 				}
