@@ -1,9 +1,3 @@
-////////////////////////////////
-/// usage : 1.	the entry to the algorithm for the guillotine cut problem.
-/// 
-/// note  : 1.	
-////////////////////////////////
-
 #ifndef SMART_SZX_INVENTORY_ROUTING_SOLVER_H
 #define SMART_SZX_INVENTORY_ROUTING_SOLVER_H
 
@@ -34,6 +28,7 @@ namespace szx {
 			int adjId; // 邻接点ID
 			int eWgt;  // 边权
 			AdjNode *next;
+			AdjNode() :adjId(0), eWgt(0), next(nullptr) {}
 			AdjNode(int id, int w, AdjNode *nx = nullptr) :adjId(id), eWgt(w), next(nx) {}
 		};
 
@@ -41,12 +36,15 @@ namespace szx {
 			int vWgt;     // 节点权重
 			int adjWgt;   // 节点的边权和
 			AdjNode *adj; // 节点邻居链表
+
+			Node() :vWgt(0), adjWgt(0), adj(nullptr) {}
 		};
+
 		struct GraphAdjList {
 			List<Node> nodes;
 
 			GraphAdjList() = default;
-			GraphAdjList(int nodeNum) { nodes = List<Node>(nodeNum); }
+			GraphAdjList(int nodeNum) { nodes.resize(nodeNum); }
 			GraphAdjList(const List<int> &ns, const Map<std::pair<int, int>, int> &es) {
 				init(ns, es);
 			}
@@ -91,7 +89,9 @@ namespace szx {
 			List<std::list<int>> buckets;
 
 			BucketArr() :maxGain(0) {}
-			BucketArr(int maxIndex) :maxGain(0), buckets(List<std::list<int>>(2 * maxIndex + 1)) {}
+			BucketArr(int maxIndex) :maxGain(0) {
+				buckets.resize(2 * maxIndex + 1);
+			}
 		};
 		struct BucketStruct
 		{
@@ -101,9 +101,9 @@ namespace szx {
 			List<List<GainPtr>> vptrList;
 
 			BucketStruct() = default;
-			BucketStruct(int partNum, int nodeNum, int maxIndex) :
-				bktArrList(List<BucketArr>(partNum, BucketArr(maxIndex))),
-				vptrList(List<List<GainPtr>>(nodeNum, List<GainPtr>(partNum))) {
+			BucketStruct(int partNum, int nodeNum, int maxIndex) {
+				bktArrList.resize(partNum, BucketArr(maxIndex));
+				vptrList.resize(nodeNum, List<GainPtr>(partNum));
 				for (int v = 0; v < nodeNum; ++v) {
 					for (int k = 0; k < partNum; ++k) {
 						vptrList[v][k].first = -1;
@@ -141,7 +141,71 @@ namespace szx {
 			}
 		};
 
-		
+		struct GraphPartition {
+			int nodeNum = 0;
+			int partNum = 0;
+			std::shared_ptr<GraphAdjList> p2G;
+			List<int> nodesPart;
+			GraphPartition(std::shared_ptr<GraphAdjList> p2G, int pn) :nodeNum(p2G->nodes.size()), partNum(pn), p2G(p2G) {
+				nodesPart.resize(nodeNum);
+			}
+		};
+
+		struct TabuStruct {
+			int partNum, nodeNum;
+			int maxIndex, maxPart; // 每个桶的最大索引, 拥有最大权重的分区
+			int curObj;
+
+			std::shared_ptr<GraphAdjList> G;
+			List<int> vpmap;	// 各节点所在分区
+			// 桶结构, 包含 k 个桶数组和一个指向桶中链表节点的迭代器的列表
+			BucketStruct bktStruct;
+			List<List<int>> tabuTable;
+			List<int> mvFreq, partWgts;
+			List<unordered_set<int>> curParts;       // 各分区包含的节点
+			List<unordered_set<int>> borNodesOfPart; // 各分区相连的边界节点
+
+			TabuStruct() = default;
+			TabuStruct(const GraphPartition &gp, int mi, int obj) :partNum(gp.partNum), nodeNum(gp.nodeNum),
+				maxIndex(mi), maxPart(0), curObj(obj), G(gp.p2G), vpmap(gp.nodesPart), bktStruct(gp.partNum, gp.nodeNum, mi) {
+				tabuTable.resize(nodeNum, List<int>(partNum));
+				mvFreq.resize(nodeNum);
+				partWgts.resize(partNum);
+				curParts.resize(partNum);
+				borNodesOfPart.resize(partNum);
+			}
+
+			void initDataStrcut() {
+				for (int i = 0; i < nodeNum; ++i) {
+					curParts[vpmap[i]].insert(i); // i 所在分区添加 i 节点
+					partWgts[vpmap[i]] += G->nodes[i].vWgt;
+					if (partWgts[vpmap[i]] > maxPart) { maxPart = vpmap[i]; }
+					for (auto pAdj = G->nodes[i].adj; pAdj; pAdj = pAdj->next) {
+						if (vpmap[pAdj->adjId] != vpmap[i]) {
+							// i 的邻居和 i 不在一个分区, 该邻居为 i 所在分区的边界节点
+							borNodesOfPart[vpmap[i]].insert(pAdj->adjId);
+						}
+					}
+				}
+				// 计算各分区的边界点移动到分区中能够获得的 gain 值
+				for (int k = 0; k < partNum; ++k) {
+					for (int v : borNodesOfPart[k]) {
+						int gainIndex = getGainIndex(v, k);
+						bktStruct.insert(gainIndex, v, k);
+					}
+				}
+			}
+
+			int getGainIndex(int nid, int pid) {
+				int oldCutWgt = 0, newCutWgt = 0; // 节点被移动前后贡献的切边权重
+				for (auto p = G->nodes[nid].adj; p; p = p->next) {
+					if (vpmap[p->adjId] != vpmap[nid]) { oldCutWgt += p->eWgt; }
+					if (vpmap[p->adjId] != pid) { newCutWgt += p->eWgt; }
+				}
+				return oldCutWgt - newCutWgt + maxIndex;
+			}
+		};
+
 
 		using Dvar = MpSolver::DecisionVar;
 		using Expr = MpSolver::LinearExpr;
@@ -315,25 +379,17 @@ namespace szx {
 
 	protected:
 		void coarsenGraph();
-		List<int> initialPartition();
-		int getGain(std::shared_ptr<GraphAdjList> pG, List<int> &nodesPart, int nid, int pid);
-		List<int> its(std::shared_ptr<GraphAdjList> pG, List<int> &nodesPart);
-		List<int> selectSingleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
-			const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq);
+		void initialPartition(GraphPartition &gp);
+		void uncoarsen(GraphPartition &gp);
 
-		List<int> selectDoubleMove(int iter, std::shared_ptr<GraphAdjList> pG, const List<int> &nodesPart,
-			const List<List<int>> &tabuTable, const BucketStruct &bktStruct, const List<int> &mvFreq);
-
-
-		int optimizeCosGraph(List<List<int>> &parts, double timeoutInSec = 600);
-		// 返回 gain >= bottomGain 的节点集合 highGainNodes
-		int getHighGainNodes(List<int> &highGainNodes, int bottomGain = -2);
-		// 当前被保留的节点集是否达到指定大小
-		bool isUpperNonZero(const List<int> &reservedNodes, const List<List<int>> &parts, int upperNonZeros = 1e4);
-		// 返回不被压缩的节点集合 reservedNodes
-		int getReservedNodes(const List<int> &highGainNodes, List<int> &reservedNodes);
-
+		void its(GraphPartition &gp);
+		void perturbation(TabuStruct &tss);
+		void execMove(TabuStruct &tss, int node, int target, int gain = 0); // gain=0 表示不更新 obj
+		List<int> selectSingleMove(int iter, TabuStruct &tss);
+		List<int> selectDoubleMove(int iter, TabuStruct &tss);
 		
+		int getObj(GraphPartition &gp);
+		int getObj(std::shared_ptr<GraphAdjList> &p2G, const List<int> &nodesPart);
 
 #pragma endregion Method
 
@@ -344,20 +400,6 @@ namespace szx {
 
 		List<std::shared_ptr<GraphAdjList>> graphList;
 		List<List<int>> nodeMap;
-
-
-		GraphAdjList graph;
-		List<int> gidmap;
-		List<List<int>> iniSolParts; // 初始解各分区及其节点
-
-		struct {
-			List<int> cosNodePart; // 压缩节点所在分区
-			List<int> curNodes;
-			Map<std::pair<int, int>, int> curEdges;
-
-			List<int> highGainNodes, reservedNode;
-			List<List<int>> parts;
-		} aux;
 
 		Environment env;
 		Configuration cfg;
