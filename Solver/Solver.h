@@ -162,8 +162,8 @@ namespace szx {
 			BucketStruct bktStruct;
 			List<List<int>> tabuTable;
 			List<int> mvFreq, partWgts;
-			List<unordered_set<int>> curParts;       // 各分区包含的节点
-			List<unordered_set<int>> borNodesOfPart; // 各分区相连的边界节点
+			List<std::unordered_set<int>> curParts;       // 各分区包含的节点
+			List<std::unordered_set<int>> borNodesOfPart; // 各分区相连的边界节点
 
 			TabuStruct() = default;
 			TabuStruct(const GraphPartition &gp, int mi, int obj) :partNum(gp.partNum), nodeNum(gp.nodeNum),
@@ -375,7 +375,7 @@ namespace szx {
 
 #pragma region Method
 	public:
-		bool solve(); // return true if exit normally. solve by multiple workers together.
+		void solve(); // return true if exit normally. solve by multiple workers together.
 
 	protected:
 		void coarsenGraph();

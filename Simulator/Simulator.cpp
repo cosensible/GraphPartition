@@ -103,8 +103,8 @@ namespace szx {
 		task.instSet = "";
 		task.instId = "add20";
 		task.timeout = "600";
-		//task.randSeed = "1559429277";
-		task.randSeed = to_string(Random::generateSeed());
+		task.randSeed = "1559429277";
+		//task.randSeed = to_string(Random::generateSeed());
 		task.jobNum = "1";
 		task.cfgPath = Env::DefaultCfgPath();
 		task.logPath = Env::DefaultLogPath();

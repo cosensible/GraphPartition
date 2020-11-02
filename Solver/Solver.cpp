@@ -146,11 +146,15 @@ namespace szx {
 
 #pragma region Solver
 
-	bool Solver::solve() {
+	void Solver::solve() {
+		cout << "begin coarsen graph" << endl;
 		coarsenGraph();
+		cout << "begin initial partition" << endl;
 		GraphPartition gp(graphList.back(), input.partnum());
 		initialPartition(gp);
+		cout << "begin optimize initial sol" << endl;
 		its(gp);
+		cout << "begin uncoarsen graph" << endl;
 		uncoarsen(gp);
 		cout << "Obj = " << getObj(gp) << endl;
 	}
@@ -338,7 +342,7 @@ namespace szx {
 	// 将 node 节点从原来的分区移动到 target 分区
 	void Solver::execMove(TabuStruct &tss, int node, int target, int gain) {
 		int src = tss.vpmap[node];
-		tss.curObj -= gain;
+		tss.curObj -= (gain - tss.maxIndex);
 		tss.vpmap[node] = target;
 		tss.curParts[src].erase(node);
 		tss.curParts[target].insert(node);
