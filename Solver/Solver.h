@@ -179,7 +179,7 @@ namespace szx {
 				for (int i = 0; i < nodeNum; ++i) {
 					curParts[vpmap[i]].insert(i); // i 所在分区添加 i 节点
 					partWgts[vpmap[i]] += G->nodes[i].vWgt;
-					if (partWgts[vpmap[i]] > maxPart) { maxPart = vpmap[i]; }
+					if (partWgts[vpmap[i]] > partWgts[maxPart]) { maxPart = vpmap[i]; }
 					for (auto pAdj = G->nodes[i].adj; pAdj; pAdj = pAdj->next) {
 						if (vpmap[pAdj->adjId] != vpmap[i]) {
 							// i 的邻居和 i 不在一个分区, 该邻居为 i 所在分区的边界节点
