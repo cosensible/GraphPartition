@@ -17,8 +17,12 @@ namespace szx {
 
 	// EXTEND[szx][5]: read it from InstanceList.txt.
 	static const vector<String> instList({
-		"add20"
-	});
+		"add20",    "data",        "3elt",      "uk",        "add32",     "bcsstk33",  "whitaker3",
+		"crack",    "wing_nodal",  "fe_4elt2",  "vibrobox",  "bcsstk29",  "4elt",      "fe_sphere",
+		"cti",      "memplus",     "cs4",       "bcsstk30",  "bcsstk31",  "fe_pwt",    "bcsstk32",
+		"fe_body",  "t60k",        "wing",      "brack2",    "finan512",  "fe_tooth",  "fe_rotor",
+		"598a",     "fe_ocean"
+		});
 
 	void Simulator::initDefaultEnvironment() {
 		Solver::Environment env;
@@ -103,8 +107,8 @@ namespace szx {
 		task.instSet = "";
 		task.instId = "add20";
 		task.timeout = "600";
-		task.randSeed = "1559429277";
-		//task.randSeed = to_string(Random::generateSeed());
+		//task.randSeed = "1559429277";
+		task.randSeed = to_string(Random::generateSeed());
 		task.jobNum = "1";
 		task.cfgPath = Env::DefaultCfgPath();
 		task.logPath = Env::DefaultLogPath();

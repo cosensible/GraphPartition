@@ -12,6 +12,7 @@
 #include <memory>
 #include <unordered_set>
 #include <list>
+#include <algorithm>
 
 #include "Common.h"
 #include "Utility.h"
@@ -133,7 +134,7 @@ namespace szx {
 				auto &bkt = bktArrList[pid];
 				bkt.buckets[gainPtr.first].erase(gainPtr.second);
 				if (gainPtr.first == bkt.maxGain) {
-					while (bkt.maxGain > 0 && bkt.buckets[bkt.maxGain].size() == 0) {
+					while (bkt.maxGain > 0 && bkt.buckets[bkt.maxGain].empty()) {
 						--bkt.maxGain;
 					}
 				}
@@ -153,23 +154,22 @@ namespace szx {
 
 		struct TabuStruct {
 			int partNum, nodeNum;
-			int maxIndex, maxPart; // 每个桶的最大索引, 拥有最大权重的分区
+			int maxIndex, maxPartWgt; // 每个桶的最大索引, 分区的最大权重
 			int curObj;
 
 			std::shared_ptr<GraphAdjList> G;
-			List<int> vpmap;	// 各节点所在分区
+			List<int> vpmap; // 各节点所在分区
 			// 桶结构, 包含 k 个桶数组和一个指向桶中链表节点的迭代器的列表
 			BucketStruct bktStruct;
 			List<List<int>> tabuTable;
-			List<int> mvFreq, partWgts;
+			List<int> lastMvIter, partWgts;
 			List<std::unordered_set<int>> curParts;       // 各分区包含的节点
 			List<std::unordered_set<int>> borNodesOfPart; // 各分区相连的边界节点
 
-			TabuStruct() = default;
 			TabuStruct(const GraphPartition &gp, int mi, int obj) :partNum(gp.partNum), nodeNum(gp.nodeNum),
-				maxIndex(mi), maxPart(0), curObj(obj), G(gp.p2G), vpmap(gp.nodesPart), bktStruct(gp.partNum, gp.nodeNum, mi) {
+				maxIndex(mi), maxPartWgt(0), curObj(obj), G(gp.p2G), vpmap(gp.nodesPart), bktStruct(gp.partNum, gp.nodeNum, mi) {
 				tabuTable.resize(nodeNum, List<int>(partNum));
-				mvFreq.resize(nodeNum);
+				lastMvIter.resize(nodeNum);
 				partWgts.resize(partNum);
 				curParts.resize(partNum);
 				borNodesOfPart.resize(partNum);
@@ -179,7 +179,6 @@ namespace szx {
 				for (int i = 0; i < nodeNum; ++i) {
 					curParts[vpmap[i]].insert(i); // i 所在分区添加 i 节点
 					partWgts[vpmap[i]] += G->nodes[i].vWgt;
-					if (partWgts[vpmap[i]] > partWgts[maxPart]) { maxPart = vpmap[i]; }
 					for (auto pAdj = G->nodes[i].adj; pAdj; pAdj = pAdj->next) {
 						if (vpmap[pAdj->adjId] != vpmap[i]) {
 							// i 的邻居和 i 不在一个分区, 该邻居为 i 所在分区的边界节点
@@ -187,6 +186,7 @@ namespace szx {
 						}
 					}
 				}
+				maxPartWgt = *std::max_element(partWgts.begin(), partWgts.end());
 				// 计算各分区的边界点移动到分区中能够获得的 gain 值
 				for (int k = 0; k < partNum; ++k) {
 					for (int v : borNodesOfPart[k]) {
@@ -384,9 +384,9 @@ namespace szx {
 
 		void its(GraphPartition &gp);
 		void perturbation(TabuStruct &tss);
-		void execMove(TabuStruct &tss, int node, int target, int gain = 0); // gain=0 表示不更新 obj
+		void execMove(TabuStruct &tss, int node, int target, int gain = -1); // gain=-1 表示不更新 obj
 		List<int> selectSingleMove(int iter, TabuStruct &tss);
-		List<int> selectDoubleMove(int iter, TabuStruct &tss);
+		List<int> selectSecondMove(int iter, TabuStruct &tss, int sp = -1);  // sp=-1 表示第一种邻域没选出合法分区
 		
 		int getObj(GraphPartition &gp);
 		int getObj(std::shared_ptr<GraphAdjList> &p2G, const List<int> &nodesPart);
@@ -397,6 +397,9 @@ namespace szx {
 	public:
 		Problem::Input input;
 		Problem::Output output;
+		struct {
+			int partnum = 4;
+		}aux;
 
 		List<std::shared_ptr<GraphAdjList>> graphList;
 		List<List<int>> nodeMap;
