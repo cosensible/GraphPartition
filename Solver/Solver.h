@@ -28,17 +28,22 @@ namespace szx {
 		struct AdjNode {
 			int adjId; // 邻接点ID
 			int eWgt;  // 边权
-			AdjNode *next;
-			AdjNode() :adjId(0), eWgt(0), next(nullptr) {}
-			AdjNode(int id, int w, AdjNode *nx = nullptr) :adjId(id), eWgt(w), next(nx) {}
+
+			AdjNode() = default;
+			AdjNode(int id, int w) :adjId(id), eWgt(w) {}
+		};
+		struct Comp {
+			bool operator()(const AdjNode &lhs, const AdjNode &rhs) {
+				if (lhs.eWgt != rhs.eWgt) return lhs.eWgt > rhs.eWgt;
+				return lhs.adjId > rhs.adjId;
+			}
 		};
 
 		struct Node {
 			int vWgt;     // 节点权重
 			int adjWgt;   // 节点的边权和
-			AdjNode *adj; // 节点邻居链表
-
-			Node() :vWgt(0), adjWgt(0), adj(nullptr) {}
+			std::unordered_map<int,int> adjs;
+			std::set<AdjNode, Comp> adjList; // 邻接表, 按边权降序排列
 		};
 
 		struct GraphAdjList {
@@ -46,40 +51,20 @@ namespace szx {
 
 			GraphAdjList() = default;
 			GraphAdjList(int nodeNum) { nodes.resize(nodeNum); }
-			GraphAdjList(const List<int> &ns, const Map<std::pair<int, int>, int> &es) {
+			GraphAdjList(const List<int> &ns, const std::map<std::pair<int,int>,int> &es) {
 				init(ns, es);
 			}
 
-			void init(const List<int> &ns, const Map<std::pair<int, int>, int> &es) {
+			void init(const List<int> &ns, const std::map<std::pair<int, int>, int> &es) {
 				nodes.resize(ns.size());
 				for (int i = 0; i < nodes.size(); ++i) {
 					nodes[i].vWgt = ns[i];
 				}
 				for (auto e = es.begin(); e != es.end(); ++e) {
-					// 根据邻接点ID和对应边权构造邻接点
-					AdjNode *newAdj = new AdjNode(e->first.second, e->second);
-					nodes[e->first.first].adjWgt += e->second;
-					// 将该邻接点插入邻接链表头部
-					newAdj->next = nodes[e->first.first].adj;
-					nodes[e->first.first].adj = newAdj;
-					// 寻找新插入节点按边权升序排序后的位置
-					AdjNode *adj = nodes[e->first.first].adj, *pos = adj;
-					while (pos->next && pos->next->eWgt > adj->eWgt) {
-						pos = pos->next;
-					}
-					if (pos == adj) { continue; }
-					nodes[e->first.first].adj = adj->next;
-					adj->next = pos->next;
-					pos->next = adj;
-				}
-			}
-			~GraphAdjList() {
-				for (auto &n : nodes) {
-					while (n.adj) {
-						AdjNode *cur = n.adj;
-						n.adj = n.adj->next;
-						delete cur;
-					}
+					int src = e->first.first, dst = e->first.second, wgt = e->second;
+					nodes[src].adjWgt += wgt;
+					nodes[src].adjs[dst] = wgt;
+					nodes[src].adjList.insert(AdjNode(dst, wgt));
 				}
 			}
 		};
@@ -179,10 +164,10 @@ namespace szx {
 				for (int i = 0; i < nodeNum; ++i) {
 					curParts[vpmap[i]].insert(i); // i 所在分区添加 i 节点
 					partWgts[vpmap[i]] += G->nodes[i].vWgt;
-					for (auto pAdj = G->nodes[i].adj; pAdj; pAdj = pAdj->next) {
-						if (vpmap[pAdj->adjId] != vpmap[i]) {
+					for (auto &vw : G->nodes[i].adjs) {
+						if (vpmap[vw.first] != vpmap[i]) {
 							// i 的邻居和 i 不在一个分区, 该邻居为 i 所在分区的边界节点
-							borNodesOfPart[vpmap[i]].insert(pAdj->adjId);
+							borNodesOfPart[vpmap[i]].insert(vw.first);
 						}
 					}
 				}
@@ -198,9 +183,9 @@ namespace szx {
 
 			int getGainIndex(int nid, int pid) {
 				int oldCutWgt = 0, newCutWgt = 0; // 节点被移动前后贡献的切边权重
-				for (auto p = G->nodes[nid].adj; p; p = p->next) {
-					if (vpmap[p->adjId] != vpmap[nid]) { oldCutWgt += p->eWgt; }
-					if (vpmap[p->adjId] != pid) { newCutWgt += p->eWgt; }
+				for (auto &vw : G->nodes[nid].adjs) {
+					if (vpmap[vw.first] != vpmap[nid]) { oldCutWgt += vw.second; }
+					if (vpmap[vw.first] != pid) { newCutWgt += vw.second; }
 				}
 				return oldCutWgt - newCutWgt + maxIndex;
 			}
@@ -375,13 +360,16 @@ namespace szx {
 
 #pragma region Method
 	public:
-		void solve(); // return true if exit normally. solve by multiple workers together.
+		void record() const;
 
 	protected:
+		void solve();
 		void coarsenGraph();
+		void coarsenGraph1();
 		void initialPartition(GraphPartition &gp);
 		void uncoarsen(GraphPartition &gp);
 
+		void its_1m(GraphPartition &gp);
 		void its(GraphPartition &gp);
 		void perturbation(TabuStruct &tss);
 		void execMove(TabuStruct &tss, int node, int target, int gain = -1); // gain=-1 表示不更新 obj
@@ -390,6 +378,7 @@ namespace szx {
 		
 		int getObj(GraphPartition &gp);
 		int getObj(std::shared_ptr<GraphAdjList> &p2G, const List<int> &nodesPart);
+		double getImbalance(GraphPartition &gp);
 
 #pragma endregion Method
 
@@ -398,7 +387,8 @@ namespace szx {
 		Problem::Input input;
 		Problem::Output output;
 		struct {
-			int partnum = 4;
+			int partnum = 8;
+			double imbalance;
 		}aux;
 
 		List<std::shared_ptr<GraphAdjList>> graphList;

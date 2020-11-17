@@ -5,50 +5,32 @@ option java_package = "pb";
 option java_outer_classname = "GraphPartition";
 
 message GraphPartition {
-	message Input {
-		UndirectGraph graph = 1;
-		int32 partNum = 2;		// 分区数
-		double imbalance = 3;	// 非平衡参数
+	message Input { // 输入的无向图. 节点从零开始连续编号
+		repeated Node nodes = 1; // 节点列表
+		repeated Edge edges = 2; // 边列表
 	}
 
 	message Output {
-		repeated int32 nodeParts = 1;	// 各个节点所在分区的编号
-	}
-
-	message UndirectGraph {			// 无向图信息. 节点从 0 开始连续编号
-		repeated Edge edges = 1;	// 边列表
-		repeated Node nodes = 2;	// 节点列表
-	}
-
-	message Edge {
-		int32 beg = 1;		// 边的源节点编号
-		int32 end = 2;		// 边的宿节点编号
-		int32 weight = 3;	// 边权重
+		repeated int32 nodepart = 1; // 各节点所在分区的编号
 	}
 
 	message Node {
-		int32 weight = 1;	// 节点权重
+		int32 wgt = 1; // 节点权重
+	}
+
+	message Edge {
+		int32 beg = 1; // 边的源节点编号
+		int32 end = 2; // 边的宿节点编号
+		int32 wgt = 3; // 边权重
 	}
 }
 
-message Submission {	// 测评系统提交信息摘要.
-	// 应在 SDK 内由提交者手工填写的数据项.
-	string author = 1;		// 提交者姓名.
-	string algorithm = 2;	// 算法名称.
-	string thread = 3;		// 算法线程数
-	string cpu = 4;			// 处理器型号与主频.
-	string ram = 5;			// 内存容量与频率. (Windows 下可以使用 wmic memorychip 命令查看)
-	string language = 6;	// 编程语言.
-	string compiler = 7;	// 编译器.
-	string os = 8;			// 操作系统
+message Submission {
+	string problem = 1;  // 问题名称
+	string instance = 2; // 算例名称
+	int32 partnum = 3;   // 分区数
 
-	// 由 SDK 自动记录的数据项.
-	string problem = 21;	// 问题名称.
-	string instance = 22;	// 算例名称.
-	string duration = 23;	// 求解耗时.
-
-	// 由服务器自动计算的数据项.
-	double obj = 31;		// 计算结果目标函数值.
-	string email = 32;		// 提交者邮箱.
-	string date = 33;		// 提交时间.
+	int32 obj = 11;        // 该划分的目标函数值
+	double imbalance = 12; // 该划分的非平衡状态
+	string duration = 13;  // 求解耗时
 }

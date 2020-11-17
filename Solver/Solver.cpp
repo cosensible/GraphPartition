@@ -68,6 +68,19 @@ namespace szx {
 		Solver solver(input, env, cfg);
 		solver.solve();
 
+		pb::Submission submission;
+		submission.set_instance(env.friendlyInstName());
+		submission.set_partnum(solver.aux.partnum);
+		submission.set_obj(solver.output.obj);
+		submission.set_imbalance(solver.aux.imbalance);
+		submission.set_duration(to_string(solver.timer.elapsedSeconds()) + "s");
+
+		solver.output.save(env.slnPath, submission);
+#if SZX_DEBUG
+		solver.output.save(env.solutionPathWithTime(), submission);
+		solver.record();
+#endif // SZX_DEBUG
+
 		return 0;
 	}
 #pragma endregion Solver::Cli
@@ -146,6 +159,32 @@ namespace szx {
 
 #pragma region Solver
 
+	void Solver::record() const {
+#if SZX_DEBUG
+		ostringstream log;
+		System::MemoryUsage mu = System::peakMemoryUsage();
+
+		// record basic information.
+		log << env.friendlyLocalTime() << "," << env.instPath << ","
+			<< aux.partnum << "," << output.obj << "," << aux.imbalance << ",";
+
+		log << timer.elapsedSeconds() << "," << env.randSeed << ","
+			<< mu.physicalMemory << "," << mu.virtualMemory << endl;
+
+		// append all text atomically.
+		static mutex logFileMutex;
+		lock_guard<mutex> logFileGuard(logFileMutex);
+
+		ofstream logFile(env.logPath, ios::app);
+		logFile.seekp(0, ios::end);
+		if (logFile.tellp() <= 0) {
+			logFile << "Time,Instance,Partnum,Obj,Imbalance,Duration,RandSeed,PhysMem,VirtMem" << endl;
+		}
+		logFile << log.str();
+		logFile.close();
+#endif // SZX_DEBUG
+	}
+
 	void Solver::solve() {
 		cout << "begin coarsen graph" << endl;
 		coarsenGraph();
@@ -158,7 +197,15 @@ namespace szx {
 		cout << "obj of optimized initial sol: " << getObj(gp) << endl;
 		cout << "begin uncoarsen graph" << endl;
 		uncoarsen(gp);
-		cout << "Obj = " << getObj(gp) << endl;
+		output.obj = getObj(gp);
+		cout << "Obj = " << output.obj << endl;
+
+		auto &nodepart(*output.mutable_nodepart());
+		nodepart.Resize(input.nodes_size(), 0);
+		for (int i = 0; i < nodepart.size(); ++i) {
+			nodepart[i] = gp.nodesPart[i];
+		}
+		aux.imbalance = getImbalance(gp);
 	}
 
 	template<class ForwardIt, class T>
@@ -169,17 +216,17 @@ namespace szx {
 		return last;
 	}
 
-	void Solver::coarsenGraph() {
-		const auto &inputNodes(*input.mutable_graph()->mutable_nodes());
-		const auto &inputEdges(*input.mutable_graph()->mutable_edges());
+	void Solver::coarsenGraph1() {
+		const auto &inputNodes(*input.mutable_nodes());
+		const auto &inputEdges(*input.mutable_edges());
 		// protobuf 格式转内部数据结构
 		List<int> curNodes(inputNodes.size());
-		map<pair<int, int>, int> curEdges;
+		map<pair<int, int>, int> curEdges; // 或者自定义哈希用 unordered_map
 		for (int i = 0; i < inputNodes.size(); ++i) {
-			curNodes[i] = inputNodes[i].weight();
+			curNodes[i] = inputNodes[i].wgt();
 		}
 		for (auto it = inputEdges.begin(); it != inputEdges.end(); ++it) {
-			curEdges[{it->beg(), it->end()}] = it->weight();
+			curEdges[{it->beg(), it->end()}] = it->wgt();
 		}
 
 		while (curNodes.size() > 200) {
@@ -188,29 +235,30 @@ namespace szx {
 			graphList.push_back(pGraph);
 			// 用 HEM 方法求最大匹配
 			nodeMap.push_back(List<int>(curNodes.size())); // 添加该层节点到下一层节点的映射
-			// ====> TODO：用 hash_set
-			List<int> unmatchSet(curNodes.size()); // 该层尚未匹配的节点集合
-			for (int i = 0; i < unmatchSet.size(); ++i) { unmatchSet[i] = i; }
+			unordered_set<int> unmatchSet; // 该层尚未匹配的节点集合
+			for (int i = 0; i < curNodes.size(); ++i) { unmatchSet.insert(i); }
 			int newNodeNum = 0; // 新节点个数
-			for (; !unmatchSet.empty(); ++newNodeNum) {
-				int index = rand.pick(unmatchSet.size());
-				int nid = unmatchSet[index];
-				unmatchSet.erase(unmatchSet.begin() + index);
+			while ( !unmatchSet.empty()) {
+				// 随机挑选未匹配节点 nid
+				auto it = unmatchSet.begin();
+				for (int index = rand.pick(unmatchSet.size()); index > 0; --index, ++it) {}
+				int nid = *it;
+				unmatchSet.erase(it);
 
-				AdjNode *adj = pGraph->nodes[nid].adj;
-				auto pos = unmatchSet.end();
-				while (adj) {
-					// 邻接点已经匹配，考虑下一个邻接点
-					if ((pos = binarySearch(unmatchSet.begin(), unmatchSet.end(), adj->adjId)) == unmatchSet.end()) {
-						adj = adj->next;
-					}
-					else { break; }
+				auto &adjList(pGraph->nodes[nid].adjList);
+				List<AdjNode> candAdjs; // 对应边权大的邻接点作为候选节点
+				for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+					if (unmatchSet.count(it->adjId) == 0) { continue; } // 邻接点已经匹配
+					if (candAdjs.empty() || candAdjs[0].eWgt == it->eWgt) { candAdjs.push_back(*it); }
+					else { break; } //碰到对应边权更小的邻接点
 				}
-				if (adj) {
-					unmatchSet.erase(pos);
-					nodeMap.back()[nid] = nodeMap.back()[adj->adjId] = newNodeNum;
+				if (!candAdjs.empty()) {
+					int index = rand.pick(candAdjs.size());
+					int candid = candAdjs[index].adjId;
+					unmatchSet.erase(candid);
+					nodeMap.back()[nid] = nodeMap.back()[candid] = newNodeNum++;
 				}
-				else { nodeMap.back()[nid] = newNodeNum; }
+				else { nodeMap.back()[nid] = newNodeNum++; }
 			}
 
 			// 根据最大匹配（节点映射关系）压缩图
@@ -224,7 +272,83 @@ namespace szx {
 				if (beg == end) { continue; }
 				newEdges[{beg, end}] += e->second;
 			}
+			swap(curNodes, newNodes);
+			swap(curEdges, newEdges);
+		}
+		auto pGraph = std::make_shared<GraphAdjList>(curNodes, curEdges);
+		graphList.push_back(pGraph);
+	}
 
+	void Solver::coarsenGraph() {
+		const auto &inputNodes(*input.mutable_nodes());
+		const auto &inputEdges(*input.mutable_edges());
+		// protobuf 格式转内部数据结构
+		List<int> curNodes(inputNodes.size());
+		map<pair<int, int>, int> curEdges; // 或者自定义哈希用 unordered_map
+		for (int i = 0; i < inputNodes.size(); ++i) {
+			curNodes[i] = inputNodes[i].wgt();
+		}
+		for (auto it = inputEdges.begin(); it != inputEdges.end(); ++it) {
+			curEdges[{it->beg(), it->end()}] = it->wgt();
+		}
+
+		while (curNodes.size() > 15*aux.partnum) {
+			// 构造当前图的邻接表
+			auto pGraph = std::make_shared<GraphAdjList>(curNodes, curEdges);
+			graphList.push_back(pGraph);
+			// 用 HEM* 方法求最大匹配
+			nodeMap.push_back(List<int>(curNodes.size())); // 添加该层节点到下一层节点的映射
+			unordered_set<int> unmatchSet; // 该层尚未匹配的节点集合
+			for (int i = 0; i < curNodes.size(); ++i) { unmatchSet.insert(i); }
+			int newNodeNum = 0; // 新节点个数
+			while (!unmatchSet.empty()) {
+				// 随机挑选未匹配节点 nid
+				auto it = unmatchSet.begin();
+				for (int index = rand.pick(unmatchSet.size()); index > 0; --index, ++it) {}
+				int nid = *it;
+				unmatchSet.erase(it);
+				
+				auto &adjList(pGraph->nodes[nid].adjList);
+				List<AdjNode> candAdjs; // 对应边权大的邻接点作为候选节点
+				for (auto it = adjList.begin(); it != adjList.end(); ++it) {
+					if (unmatchSet.count(it->adjId) == 0) { continue; } // 邻接点已经匹配
+					if (candAdjs.empty() || candAdjs[0].eWgt == it->eWgt) { candAdjs.push_back(*it); }
+					else { break; } //碰到对应边权更小的邻接点
+				}
+				if (candAdjs.empty()) { // 无匹配节点
+					nodeMap.back()[nid] = newNodeNum++;
+					continue;
+				}
+				auto &nodes(pGraph->nodes);
+				int candId = -1, maxWgtSum = -1;
+				for (int i = 0; i < candAdjs.size(); ++i) {
+					int candWgtSum = 0, cid = candAdjs[i].adjId;
+					for (auto &vw : nodes[nid].adjs) {
+						if (vw.first == cid) { continue; }
+						if (nodes[cid].adjs.count(vw.first) != 0) {
+							candWgtSum += nodes[cid].adjs[vw.first];
+						}
+					}
+					if (candWgtSum > maxWgtSum) {
+						candId = cid;
+						maxWgtSum = candWgtSum;
+					}
+				}
+				unmatchSet.erase(candId);
+				nodeMap.back()[nid] = nodeMap.back()[candId] = newNodeNum++;
+			}
+
+			// 根据最大匹配（节点映射关系）压缩图
+			List<int> newNodes(newNodeNum);
+			map<pair<int, int>, int> newEdges;
+			for (int i = 0; i < curNodes.size(); ++i) {
+				newNodes[nodeMap.back()[i]] += curNodes[i];
+			}
+			for (auto e = curEdges.begin(); e != curEdges.end(); ++e) {
+				int beg = nodeMap.back()[e->first.first], end = nodeMap.back()[e->first.second];
+				if (beg == end) { continue; }
+				newEdges[{beg, end}] += e->second;
+			}
 			swap(curNodes, newNodes);
 			swap(curEdges, newEdges);
 		}
@@ -364,16 +488,16 @@ namespace szx {
 
 		// 更新 borNodesOfPart
 		tss.borNodesOfPart[target].erase(node);
-		for (auto p = tss.G->nodes[node].adj; p; p = p->next) {
-			if (tss.vpmap[p->adjId] != target) {
-				tss.borNodesOfPart[target].insert(p->adjId);
+		for (auto &vw : tss.G->nodes[node].adjs) {
+			if (tss.vpmap[vw.first] != target) {
+				tss.borNodesOfPart[target].insert(vw.first);
 			}
 		}
 		tss.borNodesOfPart[src].clear();
 		for (int v : tss.curParts[src]) {
-			for (auto p = tss.G->nodes[v].adj; p; p = p->next) {
-				if (tss.vpmap[p->adjId] != src) {
-					tss.borNodesOfPart[src].insert(p->adjId);
+			for (auto &vw : tss.G->nodes[node].adjs) {
+				if (tss.vpmap[vw.first] != src) {
+					tss.borNodesOfPart[src].insert(vw.first);
 				}
 			}
 		}
@@ -395,22 +519,22 @@ namespace szx {
 			}
 		}
 		// 更新 node 邻接点在桶结构中的位置
-		for (auto p = tss.G->nodes[node].adj; p; p = p->next) {
+		for (auto &vw : tss.G->nodes[node].adjs) {
 			for (int k = 0; k < tss.curParts.size(); ++k) {
-				if (tss.vpmap[p->adjId] == k) { continue; }
-				if (tss.borNodesOfPart[k].find(p->adjId) == tss.borNodesOfPart[k].end()) {
-					tss.bktStruct.remove(p->adjId, k);
+				if (tss.vpmap[vw.first] == k) { continue; }
+				if (tss.borNodesOfPart[k].find(vw.first) == tss.borNodesOfPart[k].end()) {
+					tss.bktStruct.remove(vw.first, k);
 				}
 				else {
-					int gainIndex = tss.getGainIndex(p->adjId, k);
-					tss.bktStruct.insert(gainIndex, p->adjId, k);
+					int gainIndex = tss.getGainIndex(vw.first, k);
+					tss.bktStruct.insert(gainIndex, vw.first, k);
 				}
 			}
 		}
 	}
 
 	void Solver::perturbation(TabuStruct &tss) {
-		int ptbWgt = 0.02*input.graph().nodes_size();
+		int ptbWgt = 0.02*input.nodes_size();
 		for (int t = 0; t < ptbWgt; ++t) {
 			List<int> candPart;
 			for (int k = 0; k < tss.partNum; ++k) {
@@ -447,6 +571,8 @@ namespace szx {
 	void Solver::its(GraphPartition &gp) {
 		long iterCount = 20 * gp.nodeNum;
 		List<double> alpha = { 0.05,0.1,0.2,0.3 };
+		int noImprove1 = 0.005*input.nodes_size(), noImprove2 = noImprove1;
+		int noImprove = noImprove1 + noImprove2;
 
 		int maxAdjWgt = 0; // 各节点边权和的最大值, 作为桶的最大编号
 		for (const auto &node : gp.p2G->nodes) {
@@ -458,12 +584,9 @@ namespace szx {
 		int maxPartWgt = tss.maxPartWgt;
 
 		// 迭代禁忌搜索 N1-N2 token-ring
-		int noImprove1 = 0.005*input.graph().nodes_size(), noImprove2 = noImprove1;
-		int noImprove = noImprove1 + noImprove2;
 		for (long iter = 0; iter < iterCount;) {
 			for (long step = 0; step < noImprove && iter < iterCount;) {
 				for (long step1 = 0; step1 < noImprove1 && iter < iterCount;) {
-					// 挑选 Move 并执行
 					List<int> smv = selectSingleMove(iter, tss);
 					if(smv.empty()){
 						step = noImprove;
@@ -522,12 +645,57 @@ namespace szx {
 		}
 	}
 
+	void Solver::its_1m(GraphPartition &gp) {
+		long iterCount = 20 * input.nodes_size();
+		List<double> alpha = { 0.05,0.1,0.2,0.3 };
+
+		int maxAdjWgt = 0; // 各节点边权和的最大值, 作为桶的最大编号
+		for (const auto &node : gp.p2G->nodes) {
+			if (node.adjWgt > maxAdjWgt) { maxAdjWgt = node.adjWgt; }
+		}
+		int bestObj = getObj(gp);
+		TabuStruct tss(gp, maxAdjWgt, bestObj);
+		tss.initDataStrcut();
+		int maxPartWgt = tss.maxPartWgt;
+
+		int noImprove = 0.01*input.nodes_size();
+		for (long iter = 0; iter < iterCount;) {
+			for (long step = 0; step < noImprove && iter < iterCount;) {
+				List<int> smv = selectSingleMove(iter, tss);
+				if (smv.empty()) {
+					int minWgt = *min_element(tss.partWgts.begin(), tss.partWgts.end());
+					break;
+				}
+				int node = smv[0], target = smv[1], gain = smv[2], src = tss.vpmap[node];
+				execMove(tss, node, target, gain);
+				tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
+				tss.lastMvIter[node] = iter;
+				++step, ++iter;
+				// at least as good as bestPart in terms of the optimization objective and partition balance
+				if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
+					bestObj = tss.curObj;
+					maxPartWgt = tss.maxPartWgt;
+					gp.nodesPart = tss.vpmap;
+					step = 0;
+				}
+			}
+			if (iter < iterCount) {
+				perturbation(tss);
+				if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
+					bestObj = tss.curObj;
+					maxPartWgt = tss.maxPartWgt;
+					gp.nodesPart = tss.vpmap;
+				}
+			}
+		}
+	}
+
 	int Solver::getObj(GraphPartition &gp) {
 		int obj = 0;
 		for (int v = 0; v < gp.nodeNum; ++v) {
-			for (auto p = gp.p2G->nodes[v].adj; p; p = p->next) {
-				if (gp.nodesPart[v] != gp.nodesPart[p->adjId]) {
-					obj += p->eWgt;
+			for (auto &vw : gp.p2G->nodes[v].adjs) {
+				if (gp.nodesPart[v] != gp.nodesPart[vw.first]) {
+					obj += vw.second;
 				}
 			}
 		}
@@ -537,13 +705,24 @@ namespace szx {
 	int Solver::getObj(shared_ptr<GraphAdjList> &p2G, const List<int> &nodesPart) {
 		int obj = 0;
 		for (int v = 0; v < nodesPart.size(); ++v) {
-			for (auto p = p2G->nodes[v].adj; p; p = p->next) {
-				if (nodesPart[v] != nodesPart[p->adjId]) {
-					obj += p->eWgt;
+			for (auto &vw : p2G->nodes[v].adjs) {
+				if (nodesPart[v] != nodesPart[vw.first]) {
+					obj += vw.second;
 				}
 			}
 		}
 		return obj / 2;
+	}
+
+	double Solver::getImbalance(GraphPartition &gp) {
+		vector<int> partWgts(gp.partNum, 0);
+		for (int i = 0; i < gp.nodeNum; ++i) {
+			partWgts[gp.nodesPart[i]] += gp.p2G->nodes[i].vWgt;
+		}
+		int maxPartWgt = *std::max_element(partWgts.begin(), partWgts.end());
+		int wgtSum = std::accumulate(partWgts.begin(), partWgts.end(), 0);
+		int optWgt = 1 + wgtSum / gp.partNum;
+		return 1.0*maxPartWgt / optWgt;
 	}
 
 #pragma endregion Solver

@@ -5,18 +5,17 @@ def trans(fpath, opath):
         line = fgraph.readline().split()
         nodeNum = int(line[0])
         edgeNum = int(line[1])
-        nodes = [{'weight': 1}]*nodeNum
+        nodes = [{'wgt': 1}]*nodeNum
 
         edges = []
         for i in range(nodeNum):
             line = fgraph.readline().split()
             for e in line:
                 adj = int(e)-1
-                edge = {'beg': i, 'end': adj, 'weight': 1}
+                edge = {'beg': i, 'end': adj, 'wgt': 1}
                 edges.append(edge)
 
-        input_data = {'graph': {'nodes': nodes, 'edges': edges},
-                    'partNum': 8, 'imbalance': 0.05}
+        input_data = {'nodes': nodes, 'edges': edges}
 
         with open(opath, 'w+') as fjson:
             json.dump(input_data, fjson)

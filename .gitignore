@@ -1,8 +1,11 @@
 /.vs/*
 /Deploy/graphs/*
+/Deploy/Instance/*.json
+/Deploy/Solution/*
+!/Deploy/Solution/readme.md
 /Deploy/Simulator.exe
 /Deploy/Solver.exe
-/Deploy/Checker.exe
+/Deploy/log.csv
 /Doc/*
 /Lib/gurobi/*
 /Lib/protobuf/*

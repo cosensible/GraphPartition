@@ -38,7 +38,7 @@ namespace protobuf_GraphPartition_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[7];
+  static const ::google::protobuf::internal::ParseTable schema[6];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -61,9 +61,6 @@ extern GraphPartition_NodeDefaultTypeInternal _GraphPartition_Node_default_insta
 class GraphPartition_Output;
 class GraphPartition_OutputDefaultTypeInternal;
 extern GraphPartition_OutputDefaultTypeInternal _GraphPartition_Output_default_instance_;
-class GraphPartition_UndirectGraph;
-class GraphPartition_UndirectGraphDefaultTypeInternal;
-extern GraphPartition_UndirectGraphDefaultTypeInternal _GraphPartition_UndirectGraph_default_instance_;
 class Submission;
 class SubmissionDefaultTypeInternal;
 extern SubmissionDefaultTypeInternal _Submission_default_instance_;
@@ -75,7 +72,6 @@ template<> ::pb::GraphPartition_Edge* Arena::CreateMaybeMessage<::pb::GraphParti
 template<> ::pb::GraphPartition_Input* Arena::CreateMaybeMessage<::pb::GraphPartition_Input>(Arena*);
 template<> ::pb::GraphPartition_Node* Arena::CreateMaybeMessage<::pb::GraphPartition_Node>(Arena*);
 template<> ::pb::GraphPartition_Output* Arena::CreateMaybeMessage<::pb::GraphPartition_Output>(Arena*);
-template<> ::pb::GraphPartition_UndirectGraph* Arena::CreateMaybeMessage<::pb::GraphPartition_UndirectGraph>(Arena*);
 template<> ::pb::Submission* Arena::CreateMaybeMessage<::pb::Submission>(Arena*);
 }  // namespace protobuf
 }  // namespace google
@@ -170,37 +166,36 @@ class GraphPartition_Input : public ::google::protobuf::Message /* @@protoc_inse
 
   // accessors -------------------------------------------------------
 
-  // .pb.GraphPartition.UndirectGraph graph = 1;
-  bool has_graph() const;
-  void clear_graph();
-  static const int kGraphFieldNumber = 1;
-  private:
-  const ::pb::GraphPartition_UndirectGraph& _internal_graph() const;
-  public:
-  const ::pb::GraphPartition_UndirectGraph& graph() const;
-  ::pb::GraphPartition_UndirectGraph* release_graph();
-  ::pb::GraphPartition_UndirectGraph* mutable_graph();
-  void set_allocated_graph(::pb::GraphPartition_UndirectGraph* graph);
+  // repeated .pb.GraphPartition.Node nodes = 1;
+  int nodes_size() const;
+  void clear_nodes();
+  static const int kNodesFieldNumber = 1;
+  ::pb::GraphPartition_Node* mutable_nodes(int index);
+  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >*
+      mutable_nodes();
+  const ::pb::GraphPartition_Node& nodes(int index) const;
+  ::pb::GraphPartition_Node* add_nodes();
+  const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >&
+      nodes() const;
 
-  // double imbalance = 3;
-  void clear_imbalance();
-  static const int kImbalanceFieldNumber = 3;
-  double imbalance() const;
-  void set_imbalance(double value);
-
-  // int32 partNum = 2;
-  void clear_partnum();
-  static const int kPartNumFieldNumber = 2;
-  ::google::protobuf::int32 partnum() const;
-  void set_partnum(::google::protobuf::int32 value);
+  // repeated .pb.GraphPartition.Edge edges = 2;
+  int edges_size() const;
+  void clear_edges();
+  static const int kEdgesFieldNumber = 2;
+  ::pb::GraphPartition_Edge* mutable_edges(int index);
+  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >*
+      mutable_edges();
+  const ::pb::GraphPartition_Edge& edges(int index) const;
+  ::pb::GraphPartition_Edge* add_edges();
+  const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >&
+      edges() const;
 
   // @@protoc_insertion_point(class_scope:pb.GraphPartition.Input)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::pb::GraphPartition_UndirectGraph* graph_;
-  double imbalance_;
-  ::google::protobuf::int32 partnum_;
+  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node > nodes_;
+  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge > edges_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
 };
@@ -293,47 +288,47 @@ class GraphPartition_Output : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // repeated int32 nodeParts = 1;
-  int nodeparts_size() const;
-  void clear_nodeparts();
-  static const int kNodePartsFieldNumber = 1;
-  ::google::protobuf::int32 nodeparts(int index) const;
-  void set_nodeparts(int index, ::google::protobuf::int32 value);
-  void add_nodeparts(::google::protobuf::int32 value);
+  // repeated int32 nodepart = 1;
+  int nodepart_size() const;
+  void clear_nodepart();
+  static const int kNodepartFieldNumber = 1;
+  ::google::protobuf::int32 nodepart(int index) const;
+  void set_nodepart(int index, ::google::protobuf::int32 value);
+  void add_nodepart(::google::protobuf::int32 value);
   const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
-      nodeparts() const;
+      nodepart() const;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
-      mutable_nodeparts();
+      mutable_nodepart();
 
   // @@protoc_insertion_point(class_scope:pb.GraphPartition.Output)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > nodeparts_;
-  mutable int _nodeparts_cached_byte_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > nodepart_;
+  mutable int _nodepart_cached_byte_size_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
-class GraphPartition_UndirectGraph : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:pb.GraphPartition.UndirectGraph) */ {
+class GraphPartition_Node : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:pb.GraphPartition.Node) */ {
  public:
-  GraphPartition_UndirectGraph();
-  virtual ~GraphPartition_UndirectGraph();
+  GraphPartition_Node();
+  virtual ~GraphPartition_Node();
 
-  GraphPartition_UndirectGraph(const GraphPartition_UndirectGraph& from);
+  GraphPartition_Node(const GraphPartition_Node& from);
 
-  inline GraphPartition_UndirectGraph& operator=(const GraphPartition_UndirectGraph& from) {
+  inline GraphPartition_Node& operator=(const GraphPartition_Node& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  GraphPartition_UndirectGraph(GraphPartition_UndirectGraph&& from) noexcept
-    : GraphPartition_UndirectGraph() {
+  GraphPartition_Node(GraphPartition_Node&& from) noexcept
+    : GraphPartition_Node() {
     *this = ::std::move(from);
   }
 
-  inline GraphPartition_UndirectGraph& operator=(GraphPartition_UndirectGraph&& from) noexcept {
+  inline GraphPartition_Node& operator=(GraphPartition_Node&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -343,34 +338,34 @@ class GraphPartition_UndirectGraph : public ::google::protobuf::Message /* @@pro
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const GraphPartition_UndirectGraph& default_instance();
+  static const GraphPartition_Node& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const GraphPartition_UndirectGraph* internal_default_instance() {
-    return reinterpret_cast<const GraphPartition_UndirectGraph*>(
-               &_GraphPartition_UndirectGraph_default_instance_);
+  static inline const GraphPartition_Node* internal_default_instance() {
+    return reinterpret_cast<const GraphPartition_Node*>(
+               &_GraphPartition_Node_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  void Swap(GraphPartition_UndirectGraph* other);
-  friend void swap(GraphPartition_UndirectGraph& a, GraphPartition_UndirectGraph& b) {
+  void Swap(GraphPartition_Node* other);
+  friend void swap(GraphPartition_Node& a, GraphPartition_Node& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline GraphPartition_UndirectGraph* New() const final {
-    return CreateMaybeMessage<GraphPartition_UndirectGraph>(NULL);
+  inline GraphPartition_Node* New() const final {
+    return CreateMaybeMessage<GraphPartition_Node>(NULL);
   }
 
-  GraphPartition_UndirectGraph* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<GraphPartition_UndirectGraph>(arena);
+  GraphPartition_Node* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<GraphPartition_Node>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const GraphPartition_UndirectGraph& from);
-  void MergeFrom(const GraphPartition_UndirectGraph& from);
+  void CopyFrom(const GraphPartition_Node& from);
+  void MergeFrom(const GraphPartition_Node& from);
   void Clear() final;
   bool IsInitialized() const final;
 
@@ -387,7 +382,7 @@ class GraphPartition_UndirectGraph : public ::google::protobuf::Message /* @@pro
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(GraphPartition_UndirectGraph* other);
+  void InternalSwap(GraphPartition_Node* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -403,36 +398,17 @@ class GraphPartition_UndirectGraph : public ::google::protobuf::Message /* @@pro
 
   // accessors -------------------------------------------------------
 
-  // repeated .pb.GraphPartition.Edge edges = 1;
-  int edges_size() const;
-  void clear_edges();
-  static const int kEdgesFieldNumber = 1;
-  ::pb::GraphPartition_Edge* mutable_edges(int index);
-  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >*
-      mutable_edges();
-  const ::pb::GraphPartition_Edge& edges(int index) const;
-  ::pb::GraphPartition_Edge* add_edges();
-  const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >&
-      edges() const;
+  // int32 wgt = 1;
+  void clear_wgt();
+  static const int kWgtFieldNumber = 1;
+  ::google::protobuf::int32 wgt() const;
+  void set_wgt(::google::protobuf::int32 value);
 
-  // repeated .pb.GraphPartition.Node nodes = 2;
-  int nodes_size() const;
-  void clear_nodes();
-  static const int kNodesFieldNumber = 2;
-  ::pb::GraphPartition_Node* mutable_nodes(int index);
-  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >*
-      mutable_nodes();
-  const ::pb::GraphPartition_Node& nodes(int index) const;
-  ::pb::GraphPartition_Node* add_nodes();
-  const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >&
-      nodes() const;
-
-  // @@protoc_insertion_point(class_scope:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(class_scope:pb.GraphPartition.Node)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge > edges_;
-  ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node > nodes_;
+  ::google::protobuf::int32 wgt_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
 };
@@ -537,11 +513,11 @@ class GraphPartition_Edge : public ::google::protobuf::Message /* @@protoc_inser
   ::google::protobuf::int32 end() const;
   void set_end(::google::protobuf::int32 value);
 
-  // int32 weight = 3;
-  void clear_weight();
-  static const int kWeightFieldNumber = 3;
-  ::google::protobuf::int32 weight() const;
-  void set_weight(::google::protobuf::int32 value);
+  // int32 wgt = 3;
+  void clear_wgt();
+  static const int kWgtFieldNumber = 3;
+  ::google::protobuf::int32 wgt() const;
+  void set_wgt(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:pb.GraphPartition.Edge)
  private:
@@ -549,110 +525,7 @@ class GraphPartition_Edge : public ::google::protobuf::Message /* @@protoc_inser
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::int32 beg_;
   ::google::protobuf::int32 end_;
-  ::google::protobuf::int32 weight_;
-  mutable ::google::protobuf::internal::CachedSize _cached_size_;
-  friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
-};
-// -------------------------------------------------------------------
-
-class GraphPartition_Node : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:pb.GraphPartition.Node) */ {
- public:
-  GraphPartition_Node();
-  virtual ~GraphPartition_Node();
-
-  GraphPartition_Node(const GraphPartition_Node& from);
-
-  inline GraphPartition_Node& operator=(const GraphPartition_Node& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  GraphPartition_Node(GraphPartition_Node&& from) noexcept
-    : GraphPartition_Node() {
-    *this = ::std::move(from);
-  }
-
-  inline GraphPartition_Node& operator=(GraphPartition_Node&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const GraphPartition_Node& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const GraphPartition_Node* internal_default_instance() {
-    return reinterpret_cast<const GraphPartition_Node*>(
-               &_GraphPartition_Node_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    4;
-
-  void Swap(GraphPartition_Node* other);
-  friend void swap(GraphPartition_Node& a, GraphPartition_Node& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline GraphPartition_Node* New() const final {
-    return CreateMaybeMessage<GraphPartition_Node>(NULL);
-  }
-
-  GraphPartition_Node* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<GraphPartition_Node>(arena);
-  }
-  void CopyFrom(const ::google::protobuf::Message& from) final;
-  void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const GraphPartition_Node& from);
-  void MergeFrom(const GraphPartition_Node& from);
-  void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) final;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const final;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(GraphPartition_Node* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // int32 weight = 1;
-  void clear_weight();
-  static const int kWeightFieldNumber = 1;
-  ::google::protobuf::int32 weight() const;
-  void set_weight(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:pb.GraphPartition.Node)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::int32 weight_;
+  ::google::protobuf::int32 wgt_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
 };
@@ -693,7 +566,7 @@ class GraphPartition : public ::google::protobuf::Message /* @@protoc_insertion_
                &_GraphPartition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    4;
 
   void Swap(GraphPartition* other);
   friend void swap(GraphPartition& a, GraphPartition& b) {
@@ -745,9 +618,8 @@ class GraphPartition : public ::google::protobuf::Message /* @@protoc_insertion_
 
   typedef GraphPartition_Input Input;
   typedef GraphPartition_Output Output;
-  typedef GraphPartition_UndirectGraph UndirectGraph;
-  typedef GraphPartition_Edge Edge;
   typedef GraphPartition_Node Node;
+  typedef GraphPartition_Edge Edge;
 
   // accessors -------------------------------------------------------
 
@@ -795,7 +667,7 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
                &_Submission_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    5;
 
   void Swap(Submission* other);
   friend void swap(Submission& a, Submission& b) {
@@ -847,121 +719,9 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // accessors -------------------------------------------------------
 
-  // string author = 1;
-  void clear_author();
-  static const int kAuthorFieldNumber = 1;
-  const ::std::string& author() const;
-  void set_author(const ::std::string& value);
-  #if LANG_CXX11
-  void set_author(::std::string&& value);
-  #endif
-  void set_author(const char* value);
-  void set_author(const char* value, size_t size);
-  ::std::string* mutable_author();
-  ::std::string* release_author();
-  void set_allocated_author(::std::string* author);
-
-  // string algorithm = 2;
-  void clear_algorithm();
-  static const int kAlgorithmFieldNumber = 2;
-  const ::std::string& algorithm() const;
-  void set_algorithm(const ::std::string& value);
-  #if LANG_CXX11
-  void set_algorithm(::std::string&& value);
-  #endif
-  void set_algorithm(const char* value);
-  void set_algorithm(const char* value, size_t size);
-  ::std::string* mutable_algorithm();
-  ::std::string* release_algorithm();
-  void set_allocated_algorithm(::std::string* algorithm);
-
-  // string thread = 3;
-  void clear_thread();
-  static const int kThreadFieldNumber = 3;
-  const ::std::string& thread() const;
-  void set_thread(const ::std::string& value);
-  #if LANG_CXX11
-  void set_thread(::std::string&& value);
-  #endif
-  void set_thread(const char* value);
-  void set_thread(const char* value, size_t size);
-  ::std::string* mutable_thread();
-  ::std::string* release_thread();
-  void set_allocated_thread(::std::string* thread);
-
-  // string cpu = 4;
-  void clear_cpu();
-  static const int kCpuFieldNumber = 4;
-  const ::std::string& cpu() const;
-  void set_cpu(const ::std::string& value);
-  #if LANG_CXX11
-  void set_cpu(::std::string&& value);
-  #endif
-  void set_cpu(const char* value);
-  void set_cpu(const char* value, size_t size);
-  ::std::string* mutable_cpu();
-  ::std::string* release_cpu();
-  void set_allocated_cpu(::std::string* cpu);
-
-  // string ram = 5;
-  void clear_ram();
-  static const int kRamFieldNumber = 5;
-  const ::std::string& ram() const;
-  void set_ram(const ::std::string& value);
-  #if LANG_CXX11
-  void set_ram(::std::string&& value);
-  #endif
-  void set_ram(const char* value);
-  void set_ram(const char* value, size_t size);
-  ::std::string* mutable_ram();
-  ::std::string* release_ram();
-  void set_allocated_ram(::std::string* ram);
-
-  // string language = 6;
-  void clear_language();
-  static const int kLanguageFieldNumber = 6;
-  const ::std::string& language() const;
-  void set_language(const ::std::string& value);
-  #if LANG_CXX11
-  void set_language(::std::string&& value);
-  #endif
-  void set_language(const char* value);
-  void set_language(const char* value, size_t size);
-  ::std::string* mutable_language();
-  ::std::string* release_language();
-  void set_allocated_language(::std::string* language);
-
-  // string compiler = 7;
-  void clear_compiler();
-  static const int kCompilerFieldNumber = 7;
-  const ::std::string& compiler() const;
-  void set_compiler(const ::std::string& value);
-  #if LANG_CXX11
-  void set_compiler(::std::string&& value);
-  #endif
-  void set_compiler(const char* value);
-  void set_compiler(const char* value, size_t size);
-  ::std::string* mutable_compiler();
-  ::std::string* release_compiler();
-  void set_allocated_compiler(::std::string* compiler);
-
-  // string os = 8;
-  void clear_os();
-  static const int kOsFieldNumber = 8;
-  const ::std::string& os() const;
-  void set_os(const ::std::string& value);
-  #if LANG_CXX11
-  void set_os(::std::string&& value);
-  #endif
-  void set_os(const char* value);
-  void set_os(const char* value, size_t size);
-  ::std::string* mutable_os();
-  ::std::string* release_os();
-  void set_allocated_os(::std::string* os);
-
-  // string problem = 21;
+  // string problem = 1;
   void clear_problem();
-  static const int kProblemFieldNumber = 21;
+  static const int kProblemFieldNumber = 1;
   const ::std::string& problem() const;
   void set_problem(const ::std::string& value);
   #if LANG_CXX11
@@ -973,9 +733,9 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_problem();
   void set_allocated_problem(::std::string* problem);
 
-  // string instance = 22;
+  // string instance = 2;
   void clear_instance();
-  static const int kInstanceFieldNumber = 22;
+  static const int kInstanceFieldNumber = 2;
   const ::std::string& instance() const;
   void set_instance(const ::std::string& value);
   #if LANG_CXX11
@@ -987,9 +747,9 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_instance();
   void set_allocated_instance(::std::string* instance);
 
-  // string duration = 23;
+  // string duration = 13;
   void clear_duration();
-  static const int kDurationFieldNumber = 23;
+  static const int kDurationFieldNumber = 13;
   const ::std::string& duration() const;
   void set_duration(const ::std::string& value);
   #if LANG_CXX11
@@ -1001,58 +761,34 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_duration();
   void set_allocated_duration(::std::string* duration);
 
-  // string email = 32;
-  void clear_email();
-  static const int kEmailFieldNumber = 32;
-  const ::std::string& email() const;
-  void set_email(const ::std::string& value);
-  #if LANG_CXX11
-  void set_email(::std::string&& value);
-  #endif
-  void set_email(const char* value);
-  void set_email(const char* value, size_t size);
-  ::std::string* mutable_email();
-  ::std::string* release_email();
-  void set_allocated_email(::std::string* email);
+  // int32 partnum = 3;
+  void clear_partnum();
+  static const int kPartnumFieldNumber = 3;
+  ::google::protobuf::int32 partnum() const;
+  void set_partnum(::google::protobuf::int32 value);
 
-  // string date = 33;
-  void clear_date();
-  static const int kDateFieldNumber = 33;
-  const ::std::string& date() const;
-  void set_date(const ::std::string& value);
-  #if LANG_CXX11
-  void set_date(::std::string&& value);
-  #endif
-  void set_date(const char* value);
-  void set_date(const char* value, size_t size);
-  ::std::string* mutable_date();
-  ::std::string* release_date();
-  void set_allocated_date(::std::string* date);
-
-  // double obj = 31;
+  // int32 obj = 11;
   void clear_obj();
-  static const int kObjFieldNumber = 31;
-  double obj() const;
-  void set_obj(double value);
+  static const int kObjFieldNumber = 11;
+  ::google::protobuf::int32 obj() const;
+  void set_obj(::google::protobuf::int32 value);
+
+  // double imbalance = 12;
+  void clear_imbalance();
+  static const int kImbalanceFieldNumber = 12;
+  double imbalance() const;
+  void set_imbalance(double value);
 
   // @@protoc_insertion_point(class_scope:pb.Submission)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr author_;
-  ::google::protobuf::internal::ArenaStringPtr algorithm_;
-  ::google::protobuf::internal::ArenaStringPtr thread_;
-  ::google::protobuf::internal::ArenaStringPtr cpu_;
-  ::google::protobuf::internal::ArenaStringPtr ram_;
-  ::google::protobuf::internal::ArenaStringPtr language_;
-  ::google::protobuf::internal::ArenaStringPtr compiler_;
-  ::google::protobuf::internal::ArenaStringPtr os_;
   ::google::protobuf::internal::ArenaStringPtr problem_;
   ::google::protobuf::internal::ArenaStringPtr instance_;
   ::google::protobuf::internal::ArenaStringPtr duration_;
-  ::google::protobuf::internal::ArenaStringPtr email_;
-  ::google::protobuf::internal::ArenaStringPtr date_;
-  double obj_;
+  ::google::protobuf::int32 partnum_;
+  ::google::protobuf::int32 obj_;
+  double imbalance_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_GraphPartition_2eproto::TableStruct;
 };
@@ -1067,184 +803,116 @@ class Submission : public ::google::protobuf::Message /* @@protoc_insertion_poin
 #endif  // __GNUC__
 // GraphPartition_Input
 
-// .pb.GraphPartition.UndirectGraph graph = 1;
-inline bool GraphPartition_Input::has_graph() const {
-  return this != internal_default_instance() && graph_ != NULL;
+// repeated .pb.GraphPartition.Node nodes = 1;
+inline int GraphPartition_Input::nodes_size() const {
+  return nodes_.size();
 }
-inline void GraphPartition_Input::clear_graph() {
-  if (GetArenaNoVirtual() == NULL && graph_ != NULL) {
-    delete graph_;
-  }
-  graph_ = NULL;
+inline void GraphPartition_Input::clear_nodes() {
+  nodes_.Clear();
 }
-inline const ::pb::GraphPartition_UndirectGraph& GraphPartition_Input::_internal_graph() const {
-  return *graph_;
+inline ::pb::GraphPartition_Node* GraphPartition_Input::mutable_nodes(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.GraphPartition.Input.nodes)
+  return nodes_.Mutable(index);
 }
-inline const ::pb::GraphPartition_UndirectGraph& GraphPartition_Input::graph() const {
-  const ::pb::GraphPartition_UndirectGraph* p = graph_;
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Input.graph)
-  return p != NULL ? *p : *reinterpret_cast<const ::pb::GraphPartition_UndirectGraph*>(
-      &::pb::_GraphPartition_UndirectGraph_default_instance_);
+inline ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >*
+GraphPartition_Input::mutable_nodes() {
+  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.Input.nodes)
+  return &nodes_;
 }
-inline ::pb::GraphPartition_UndirectGraph* GraphPartition_Input::release_graph() {
-  // @@protoc_insertion_point(field_release:pb.GraphPartition.Input.graph)
-  
-  ::pb::GraphPartition_UndirectGraph* temp = graph_;
-  graph_ = NULL;
-  return temp;
+inline const ::pb::GraphPartition_Node& GraphPartition_Input::nodes(int index) const {
+  // @@protoc_insertion_point(field_get:pb.GraphPartition.Input.nodes)
+  return nodes_.Get(index);
 }
-inline ::pb::GraphPartition_UndirectGraph* GraphPartition_Input::mutable_graph() {
-  
-  if (graph_ == NULL) {
-    auto* p = CreateMaybeMessage<::pb::GraphPartition_UndirectGraph>(GetArenaNoVirtual());
-    graph_ = p;
-  }
-  // @@protoc_insertion_point(field_mutable:pb.GraphPartition.Input.graph)
-  return graph_;
+inline ::pb::GraphPartition_Node* GraphPartition_Input::add_nodes() {
+  // @@protoc_insertion_point(field_add:pb.GraphPartition.Input.nodes)
+  return nodes_.Add();
 }
-inline void GraphPartition_Input::set_allocated_graph(::pb::GraphPartition_UndirectGraph* graph) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete graph_;
-  }
-  if (graph) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      graph = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, graph, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  graph_ = graph;
-  // @@protoc_insertion_point(field_set_allocated:pb.GraphPartition.Input.graph)
+inline const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >&
+GraphPartition_Input::nodes() const {
+  // @@protoc_insertion_point(field_list:pb.GraphPartition.Input.nodes)
+  return nodes_;
 }
 
-// int32 partNum = 2;
-inline void GraphPartition_Input::clear_partnum() {
-  partnum_ = 0;
+// repeated .pb.GraphPartition.Edge edges = 2;
+inline int GraphPartition_Input::edges_size() const {
+  return edges_.size();
 }
-inline ::google::protobuf::int32 GraphPartition_Input::partnum() const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Input.partNum)
-  return partnum_;
+inline void GraphPartition_Input::clear_edges() {
+  edges_.Clear();
 }
-inline void GraphPartition_Input::set_partnum(::google::protobuf::int32 value) {
-  
-  partnum_ = value;
-  // @@protoc_insertion_point(field_set:pb.GraphPartition.Input.partNum)
+inline ::pb::GraphPartition_Edge* GraphPartition_Input::mutable_edges(int index) {
+  // @@protoc_insertion_point(field_mutable:pb.GraphPartition.Input.edges)
+  return edges_.Mutable(index);
 }
-
-// double imbalance = 3;
-inline void GraphPartition_Input::clear_imbalance() {
-  imbalance_ = 0;
+inline ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >*
+GraphPartition_Input::mutable_edges() {
+  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.Input.edges)
+  return &edges_;
 }
-inline double GraphPartition_Input::imbalance() const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Input.imbalance)
-  return imbalance_;
+inline const ::pb::GraphPartition_Edge& GraphPartition_Input::edges(int index) const {
+  // @@protoc_insertion_point(field_get:pb.GraphPartition.Input.edges)
+  return edges_.Get(index);
 }
-inline void GraphPartition_Input::set_imbalance(double value) {
-  
-  imbalance_ = value;
-  // @@protoc_insertion_point(field_set:pb.GraphPartition.Input.imbalance)
+inline ::pb::GraphPartition_Edge* GraphPartition_Input::add_edges() {
+  // @@protoc_insertion_point(field_add:pb.GraphPartition.Input.edges)
+  return edges_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >&
+GraphPartition_Input::edges() const {
+  // @@protoc_insertion_point(field_list:pb.GraphPartition.Input.edges)
+  return edges_;
 }
 
 // -------------------------------------------------------------------
 
 // GraphPartition_Output
 
-// repeated int32 nodeParts = 1;
-inline int GraphPartition_Output::nodeparts_size() const {
-  return nodeparts_.size();
+// repeated int32 nodepart = 1;
+inline int GraphPartition_Output::nodepart_size() const {
+  return nodepart_.size();
 }
-inline void GraphPartition_Output::clear_nodeparts() {
-  nodeparts_.Clear();
+inline void GraphPartition_Output::clear_nodepart() {
+  nodepart_.Clear();
 }
-inline ::google::protobuf::int32 GraphPartition_Output::nodeparts(int index) const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Output.nodeParts)
-  return nodeparts_.Get(index);
+inline ::google::protobuf::int32 GraphPartition_Output::nodepart(int index) const {
+  // @@protoc_insertion_point(field_get:pb.GraphPartition.Output.nodepart)
+  return nodepart_.Get(index);
 }
-inline void GraphPartition_Output::set_nodeparts(int index, ::google::protobuf::int32 value) {
-  nodeparts_.Set(index, value);
-  // @@protoc_insertion_point(field_set:pb.GraphPartition.Output.nodeParts)
+inline void GraphPartition_Output::set_nodepart(int index, ::google::protobuf::int32 value) {
+  nodepart_.Set(index, value);
+  // @@protoc_insertion_point(field_set:pb.GraphPartition.Output.nodepart)
 }
-inline void GraphPartition_Output::add_nodeparts(::google::protobuf::int32 value) {
-  nodeparts_.Add(value);
-  // @@protoc_insertion_point(field_add:pb.GraphPartition.Output.nodeParts)
+inline void GraphPartition_Output::add_nodepart(::google::protobuf::int32 value) {
+  nodepart_.Add(value);
+  // @@protoc_insertion_point(field_add:pb.GraphPartition.Output.nodepart)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
-GraphPartition_Output::nodeparts() const {
-  // @@protoc_insertion_point(field_list:pb.GraphPartition.Output.nodeParts)
-  return nodeparts_;
+GraphPartition_Output::nodepart() const {
+  // @@protoc_insertion_point(field_list:pb.GraphPartition.Output.nodepart)
+  return nodepart_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
-GraphPartition_Output::mutable_nodeparts() {
-  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.Output.nodeParts)
-  return &nodeparts_;
+GraphPartition_Output::mutable_nodepart() {
+  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.Output.nodepart)
+  return &nodepart_;
 }
 
 // -------------------------------------------------------------------
 
-// GraphPartition_UndirectGraph
+// GraphPartition_Node
 
-// repeated .pb.GraphPartition.Edge edges = 1;
-inline int GraphPartition_UndirectGraph::edges_size() const {
-  return edges_.size();
+// int32 wgt = 1;
+inline void GraphPartition_Node::clear_wgt() {
+  wgt_ = 0;
 }
-inline void GraphPartition_UndirectGraph::clear_edges() {
-  edges_.Clear();
+inline ::google::protobuf::int32 GraphPartition_Node::wgt() const {
+  // @@protoc_insertion_point(field_get:pb.GraphPartition.Node.wgt)
+  return wgt_;
 }
-inline ::pb::GraphPartition_Edge* GraphPartition_UndirectGraph::mutable_edges(int index) {
-  // @@protoc_insertion_point(field_mutable:pb.GraphPartition.UndirectGraph.edges)
-  return edges_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >*
-GraphPartition_UndirectGraph::mutable_edges() {
-  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.UndirectGraph.edges)
-  return &edges_;
-}
-inline const ::pb::GraphPartition_Edge& GraphPartition_UndirectGraph::edges(int index) const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.UndirectGraph.edges)
-  return edges_.Get(index);
-}
-inline ::pb::GraphPartition_Edge* GraphPartition_UndirectGraph::add_edges() {
-  // @@protoc_insertion_point(field_add:pb.GraphPartition.UndirectGraph.edges)
-  return edges_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Edge >&
-GraphPartition_UndirectGraph::edges() const {
-  // @@protoc_insertion_point(field_list:pb.GraphPartition.UndirectGraph.edges)
-  return edges_;
-}
-
-// repeated .pb.GraphPartition.Node nodes = 2;
-inline int GraphPartition_UndirectGraph::nodes_size() const {
-  return nodes_.size();
-}
-inline void GraphPartition_UndirectGraph::clear_nodes() {
-  nodes_.Clear();
-}
-inline ::pb::GraphPartition_Node* GraphPartition_UndirectGraph::mutable_nodes(int index) {
-  // @@protoc_insertion_point(field_mutable:pb.GraphPartition.UndirectGraph.nodes)
-  return nodes_.Mutable(index);
-}
-inline ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >*
-GraphPartition_UndirectGraph::mutable_nodes() {
-  // @@protoc_insertion_point(field_mutable_list:pb.GraphPartition.UndirectGraph.nodes)
-  return &nodes_;
-}
-inline const ::pb::GraphPartition_Node& GraphPartition_UndirectGraph::nodes(int index) const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.UndirectGraph.nodes)
-  return nodes_.Get(index);
-}
-inline ::pb::GraphPartition_Node* GraphPartition_UndirectGraph::add_nodes() {
-  // @@protoc_insertion_point(field_add:pb.GraphPartition.UndirectGraph.nodes)
-  return nodes_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::pb::GraphPartition_Node >&
-GraphPartition_UndirectGraph::nodes() const {
-  // @@protoc_insertion_point(field_list:pb.GraphPartition.UndirectGraph.nodes)
-  return nodes_;
+inline void GraphPartition_Node::set_wgt(::google::protobuf::int32 value) {
+  
+  wgt_ = value;
+  // @@protoc_insertion_point(field_set:pb.GraphPartition.Node.wgt)
 }
 
 // -------------------------------------------------------------------
@@ -1279,36 +947,18 @@ inline void GraphPartition_Edge::set_end(::google::protobuf::int32 value) {
   // @@protoc_insertion_point(field_set:pb.GraphPartition.Edge.end)
 }
 
-// int32 weight = 3;
-inline void GraphPartition_Edge::clear_weight() {
-  weight_ = 0;
+// int32 wgt = 3;
+inline void GraphPartition_Edge::clear_wgt() {
+  wgt_ = 0;
 }
-inline ::google::protobuf::int32 GraphPartition_Edge::weight() const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Edge.weight)
-  return weight_;
+inline ::google::protobuf::int32 GraphPartition_Edge::wgt() const {
+  // @@protoc_insertion_point(field_get:pb.GraphPartition.Edge.wgt)
+  return wgt_;
 }
-inline void GraphPartition_Edge::set_weight(::google::protobuf::int32 value) {
+inline void GraphPartition_Edge::set_wgt(::google::protobuf::int32 value) {
   
-  weight_ = value;
-  // @@protoc_insertion_point(field_set:pb.GraphPartition.Edge.weight)
-}
-
-// -------------------------------------------------------------------
-
-// GraphPartition_Node
-
-// int32 weight = 1;
-inline void GraphPartition_Node::clear_weight() {
-  weight_ = 0;
-}
-inline ::google::protobuf::int32 GraphPartition_Node::weight() const {
-  // @@protoc_insertion_point(field_get:pb.GraphPartition.Node.weight)
-  return weight_;
-}
-inline void GraphPartition_Node::set_weight(::google::protobuf::int32 value) {
-  
-  weight_ = value;
-  // @@protoc_insertion_point(field_set:pb.GraphPartition.Node.weight)
+  wgt_ = value;
+  // @@protoc_insertion_point(field_set:pb.GraphPartition.Edge.wgt)
 }
 
 // -------------------------------------------------------------------
@@ -1319,431 +969,7 @@ inline void GraphPartition_Node::set_weight(::google::protobuf::int32 value) {
 
 // Submission
 
-// string author = 1;
-inline void Submission::clear_author() {
-  author_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::author() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.author)
-  return author_.GetNoArena();
-}
-inline void Submission::set_author(const ::std::string& value) {
-  
-  author_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.author)
-}
-#if LANG_CXX11
-inline void Submission::set_author(::std::string&& value) {
-  
-  author_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.author)
-}
-#endif
-inline void Submission::set_author(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  author_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.author)
-}
-inline void Submission::set_author(const char* value, size_t size) {
-  
-  author_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.author)
-}
-inline ::std::string* Submission::mutable_author() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.author)
-  return author_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_author() {
-  // @@protoc_insertion_point(field_release:pb.Submission.author)
-  
-  return author_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_author(::std::string* author) {
-  if (author != NULL) {
-    
-  } else {
-    
-  }
-  author_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), author);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.author)
-}
-
-// string algorithm = 2;
-inline void Submission::clear_algorithm() {
-  algorithm_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::algorithm() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.algorithm)
-  return algorithm_.GetNoArena();
-}
-inline void Submission::set_algorithm(const ::std::string& value) {
-  
-  algorithm_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.algorithm)
-}
-#if LANG_CXX11
-inline void Submission::set_algorithm(::std::string&& value) {
-  
-  algorithm_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.algorithm)
-}
-#endif
-inline void Submission::set_algorithm(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  algorithm_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.algorithm)
-}
-inline void Submission::set_algorithm(const char* value, size_t size) {
-  
-  algorithm_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.algorithm)
-}
-inline ::std::string* Submission::mutable_algorithm() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.algorithm)
-  return algorithm_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_algorithm() {
-  // @@protoc_insertion_point(field_release:pb.Submission.algorithm)
-  
-  return algorithm_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_algorithm(::std::string* algorithm) {
-  if (algorithm != NULL) {
-    
-  } else {
-    
-  }
-  algorithm_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), algorithm);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.algorithm)
-}
-
-// string thread = 3;
-inline void Submission::clear_thread() {
-  thread_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::thread() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.thread)
-  return thread_.GetNoArena();
-}
-inline void Submission::set_thread(const ::std::string& value) {
-  
-  thread_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.thread)
-}
-#if LANG_CXX11
-inline void Submission::set_thread(::std::string&& value) {
-  
-  thread_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.thread)
-}
-#endif
-inline void Submission::set_thread(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  thread_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.thread)
-}
-inline void Submission::set_thread(const char* value, size_t size) {
-  
-  thread_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.thread)
-}
-inline ::std::string* Submission::mutable_thread() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.thread)
-  return thread_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_thread() {
-  // @@protoc_insertion_point(field_release:pb.Submission.thread)
-  
-  return thread_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_thread(::std::string* thread) {
-  if (thread != NULL) {
-    
-  } else {
-    
-  }
-  thread_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), thread);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.thread)
-}
-
-// string cpu = 4;
-inline void Submission::clear_cpu() {
-  cpu_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::cpu() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.cpu)
-  return cpu_.GetNoArena();
-}
-inline void Submission::set_cpu(const ::std::string& value) {
-  
-  cpu_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.cpu)
-}
-#if LANG_CXX11
-inline void Submission::set_cpu(::std::string&& value) {
-  
-  cpu_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.cpu)
-}
-#endif
-inline void Submission::set_cpu(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  cpu_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.cpu)
-}
-inline void Submission::set_cpu(const char* value, size_t size) {
-  
-  cpu_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.cpu)
-}
-inline ::std::string* Submission::mutable_cpu() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.cpu)
-  return cpu_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_cpu() {
-  // @@protoc_insertion_point(field_release:pb.Submission.cpu)
-  
-  return cpu_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_cpu(::std::string* cpu) {
-  if (cpu != NULL) {
-    
-  } else {
-    
-  }
-  cpu_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), cpu);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.cpu)
-}
-
-// string ram = 5;
-inline void Submission::clear_ram() {
-  ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::ram() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.ram)
-  return ram_.GetNoArena();
-}
-inline void Submission::set_ram(const ::std::string& value) {
-  
-  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.ram)
-}
-#if LANG_CXX11
-inline void Submission::set_ram(::std::string&& value) {
-  
-  ram_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.ram)
-}
-#endif
-inline void Submission::set_ram(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.ram)
-}
-inline void Submission::set_ram(const char* value, size_t size) {
-  
-  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.ram)
-}
-inline ::std::string* Submission::mutable_ram() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.ram)
-  return ram_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_ram() {
-  // @@protoc_insertion_point(field_release:pb.Submission.ram)
-  
-  return ram_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_ram(::std::string* ram) {
-  if (ram != NULL) {
-    
-  } else {
-    
-  }
-  ram_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ram);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.ram)
-}
-
-// string language = 6;
-inline void Submission::clear_language() {
-  language_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::language() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.language)
-  return language_.GetNoArena();
-}
-inline void Submission::set_language(const ::std::string& value) {
-  
-  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.language)
-}
-#if LANG_CXX11
-inline void Submission::set_language(::std::string&& value) {
-  
-  language_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.language)
-}
-#endif
-inline void Submission::set_language(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.language)
-}
-inline void Submission::set_language(const char* value, size_t size) {
-  
-  language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.language)
-}
-inline ::std::string* Submission::mutable_language() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.language)
-  return language_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_language() {
-  // @@protoc_insertion_point(field_release:pb.Submission.language)
-  
-  return language_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_language(::std::string* language) {
-  if (language != NULL) {
-    
-  } else {
-    
-  }
-  language_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), language);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.language)
-}
-
-// string compiler = 7;
-inline void Submission::clear_compiler() {
-  compiler_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::compiler() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.compiler)
-  return compiler_.GetNoArena();
-}
-inline void Submission::set_compiler(const ::std::string& value) {
-  
-  compiler_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.compiler)
-}
-#if LANG_CXX11
-inline void Submission::set_compiler(::std::string&& value) {
-  
-  compiler_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.compiler)
-}
-#endif
-inline void Submission::set_compiler(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  compiler_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.compiler)
-}
-inline void Submission::set_compiler(const char* value, size_t size) {
-  
-  compiler_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.compiler)
-}
-inline ::std::string* Submission::mutable_compiler() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.compiler)
-  return compiler_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_compiler() {
-  // @@protoc_insertion_point(field_release:pb.Submission.compiler)
-  
-  return compiler_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_compiler(::std::string* compiler) {
-  if (compiler != NULL) {
-    
-  } else {
-    
-  }
-  compiler_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), compiler);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.compiler)
-}
-
-// string os = 8;
-inline void Submission::clear_os() {
-  os_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::os() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.os)
-  return os_.GetNoArena();
-}
-inline void Submission::set_os(const ::std::string& value) {
-  
-  os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.os)
-}
-#if LANG_CXX11
-inline void Submission::set_os(::std::string&& value) {
-  
-  os_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.os)
-}
-#endif
-inline void Submission::set_os(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.os)
-}
-inline void Submission::set_os(const char* value, size_t size) {
-  
-  os_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.os)
-}
-inline ::std::string* Submission::mutable_os() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.os)
-  return os_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_os() {
-  // @@protoc_insertion_point(field_release:pb.Submission.os)
-  
-  return os_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_os(::std::string* os) {
-  if (os != NULL) {
-    
-  } else {
-    
-  }
-  os_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), os);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.os)
-}
-
-// string problem = 21;
+// string problem = 1;
 inline void Submission::clear_problem() {
   problem_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1796,7 +1022,7 @@ inline void Submission::set_allocated_problem(::std::string* problem) {
   // @@protoc_insertion_point(field_set_allocated:pb.Submission.problem)
 }
 
-// string instance = 22;
+// string instance = 2;
 inline void Submission::clear_instance() {
   instance_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1849,7 +1075,49 @@ inline void Submission::set_allocated_instance(::std::string* instance) {
   // @@protoc_insertion_point(field_set_allocated:pb.Submission.instance)
 }
 
-// string duration = 23;
+// int32 partnum = 3;
+inline void Submission::clear_partnum() {
+  partnum_ = 0;
+}
+inline ::google::protobuf::int32 Submission::partnum() const {
+  // @@protoc_insertion_point(field_get:pb.Submission.partnum)
+  return partnum_;
+}
+inline void Submission::set_partnum(::google::protobuf::int32 value) {
+  
+  partnum_ = value;
+  // @@protoc_insertion_point(field_set:pb.Submission.partnum)
+}
+
+// int32 obj = 11;
+inline void Submission::clear_obj() {
+  obj_ = 0;
+}
+inline ::google::protobuf::int32 Submission::obj() const {
+  // @@protoc_insertion_point(field_get:pb.Submission.obj)
+  return obj_;
+}
+inline void Submission::set_obj(::google::protobuf::int32 value) {
+  
+  obj_ = value;
+  // @@protoc_insertion_point(field_set:pb.Submission.obj)
+}
+
+// double imbalance = 12;
+inline void Submission::clear_imbalance() {
+  imbalance_ = 0;
+}
+inline double Submission::imbalance() const {
+  // @@protoc_insertion_point(field_get:pb.Submission.imbalance)
+  return imbalance_;
+}
+inline void Submission::set_imbalance(double value) {
+  
+  imbalance_ = value;
+  // @@protoc_insertion_point(field_set:pb.Submission.imbalance)
+}
+
+// string duration = 13;
 inline void Submission::clear_duration() {
   duration_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1902,131 +1170,9 @@ inline void Submission::set_allocated_duration(::std::string* duration) {
   // @@protoc_insertion_point(field_set_allocated:pb.Submission.duration)
 }
 
-// double obj = 31;
-inline void Submission::clear_obj() {
-  obj_ = 0;
-}
-inline double Submission::obj() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.obj)
-  return obj_;
-}
-inline void Submission::set_obj(double value) {
-  
-  obj_ = value;
-  // @@protoc_insertion_point(field_set:pb.Submission.obj)
-}
-
-// string email = 32;
-inline void Submission::clear_email() {
-  email_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::email() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.email)
-  return email_.GetNoArena();
-}
-inline void Submission::set_email(const ::std::string& value) {
-  
-  email_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.email)
-}
-#if LANG_CXX11
-inline void Submission::set_email(::std::string&& value) {
-  
-  email_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.email)
-}
-#endif
-inline void Submission::set_email(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  email_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.email)
-}
-inline void Submission::set_email(const char* value, size_t size) {
-  
-  email_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.email)
-}
-inline ::std::string* Submission::mutable_email() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.email)
-  return email_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_email() {
-  // @@protoc_insertion_point(field_release:pb.Submission.email)
-  
-  return email_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_email(::std::string* email) {
-  if (email != NULL) {
-    
-  } else {
-    
-  }
-  email_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), email);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.email)
-}
-
-// string date = 33;
-inline void Submission::clear_date() {
-  date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Submission::date() const {
-  // @@protoc_insertion_point(field_get:pb.Submission.date)
-  return date_.GetNoArena();
-}
-inline void Submission::set_date(const ::std::string& value) {
-  
-  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:pb.Submission.date)
-}
-#if LANG_CXX11
-inline void Submission::set_date(::std::string&& value) {
-  
-  date_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:pb.Submission.date)
-}
-#endif
-inline void Submission::set_date(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:pb.Submission.date)
-}
-inline void Submission::set_date(const char* value, size_t size) {
-  
-  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:pb.Submission.date)
-}
-inline ::std::string* Submission::mutable_date() {
-  
-  // @@protoc_insertion_point(field_mutable:pb.Submission.date)
-  return date_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Submission::release_date() {
-  // @@protoc_insertion_point(field_release:pb.Submission.date)
-  
-  return date_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Submission::set_allocated_date(::std::string* date) {
-  if (date != NULL) {
-    
-  } else {
-    
-  }
-  date_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), date);
-  // @@protoc_insertion_point(field_set_allocated:pb.Submission.date)
-}
-
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

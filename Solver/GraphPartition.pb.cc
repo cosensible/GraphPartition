@@ -22,7 +22,6 @@
 namespace protobuf_GraphPartition_2eproto {
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_GraphPartition_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Edge;
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_GraphPartition_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Node;
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_GraphPartition_2eproto ::google::protobuf::internal::SCCInfo<2> scc_info_GraphPartition_UndirectGraph;
 }  // namespace protobuf_GraphPartition_2eproto
 namespace pb {
 class GraphPartition_InputDefaultTypeInternal {
@@ -35,21 +34,16 @@ class GraphPartition_OutputDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition_Output>
       _instance;
 } _GraphPartition_Output_default_instance_;
-class GraphPartition_UndirectGraphDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition_UndirectGraph>
-      _instance;
-} _GraphPartition_UndirectGraph_default_instance_;
-class GraphPartition_EdgeDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition_Edge>
-      _instance;
-} _GraphPartition_Edge_default_instance_;
 class GraphPartition_NodeDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition_Node>
       _instance;
 } _GraphPartition_Node_default_instance_;
+class GraphPartition_EdgeDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition_Edge>
+      _instance;
+} _GraphPartition_Edge_default_instance_;
 class GraphPartitionDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<GraphPartition>
@@ -73,9 +67,10 @@ static void InitDefaultsGraphPartition_Input() {
   ::pb::GraphPartition_Input::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<1> scc_info_GraphPartition_Input =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsGraphPartition_Input}, {
-      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_UndirectGraph.base,}};
+::google::protobuf::internal::SCCInfo<2> scc_info_GraphPartition_Input =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsGraphPartition_Input}, {
+      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base,
+      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Edge.base,}};
 
 static void InitDefaultsGraphPartition_Output() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -91,21 +86,19 @@ static void InitDefaultsGraphPartition_Output() {
 ::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Output =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsGraphPartition_Output}, {}};
 
-static void InitDefaultsGraphPartition_UndirectGraph() {
+static void InitDefaultsGraphPartition_Node() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::pb::_GraphPartition_UndirectGraph_default_instance_;
-    new (ptr) ::pb::GraphPartition_UndirectGraph();
+    void* ptr = &::pb::_GraphPartition_Node_default_instance_;
+    new (ptr) ::pb::GraphPartition_Node();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::pb::GraphPartition_UndirectGraph::InitAsDefaultInstance();
+  ::pb::GraphPartition_Node::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<2> scc_info_GraphPartition_UndirectGraph =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 2, InitDefaultsGraphPartition_UndirectGraph}, {
-      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Edge.base,
-      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base,}};
+::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Node =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsGraphPartition_Node}, {}};
 
 static void InitDefaultsGraphPartition_Edge() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -120,20 +113,6 @@ static void InitDefaultsGraphPartition_Edge() {
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Edge =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsGraphPartition_Edge}, {}};
-
-static void InitDefaultsGraphPartition_Node() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::pb::_GraphPartition_Node_default_instance_;
-    new (ptr) ::pb::GraphPartition_Node();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::pb::GraphPartition_Node::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<0> scc_info_GraphPartition_Node =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsGraphPartition_Node}, {}};
 
 static void InitDefaultsGraphPartition() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -166,14 +145,13 @@ static void InitDefaultsSubmission() {
 void InitDefaults() {
   ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_Input.base);
   ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_Output.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_UndirectGraph.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_Edge.base);
   ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_Node.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition_Edge.base);
   ::google::protobuf::internal::InitSCC(&scc_info_GraphPartition.base);
   ::google::protobuf::internal::InitSCC(&scc_info_Submission.base);
 }
 
-::google::protobuf::Metadata file_level_metadata[7];
+::google::protobuf::Metadata file_level_metadata[6];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -181,22 +159,20 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Input, graph_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Input, partnum_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Input, imbalance_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Input, nodes_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Input, edges_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Output, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Output, nodeparts_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Output, nodepart_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_UndirectGraph, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Node, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_UndirectGraph, edges_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_UndirectGraph, nodes_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Node, wgt_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Edge, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -204,13 +180,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Edge, beg_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Edge, end_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Edge, weight_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Node, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Node, weight_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition_Edge, wgt_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::GraphPartition, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -221,37 +191,27 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, author_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, algorithm_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, thread_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, cpu_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, ram_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, language_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, compiler_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, os_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, problem_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, instance_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, duration_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, partnum_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, obj_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, email_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, date_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, imbalance_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::pb::Submission, duration_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::pb::GraphPartition_Input)},
-  { 8, -1, sizeof(::pb::GraphPartition_Output)},
-  { 14, -1, sizeof(::pb::GraphPartition_UndirectGraph)},
-  { 21, -1, sizeof(::pb::GraphPartition_Edge)},
-  { 29, -1, sizeof(::pb::GraphPartition_Node)},
-  { 35, -1, sizeof(::pb::GraphPartition)},
-  { 40, -1, sizeof(::pb::Submission)},
+  { 7, -1, sizeof(::pb::GraphPartition_Output)},
+  { 13, -1, sizeof(::pb::GraphPartition_Node)},
+  { 19, -1, sizeof(::pb::GraphPartition_Edge)},
+  { 27, -1, sizeof(::pb::GraphPartition)},
+  { 32, -1, sizeof(::pb::Submission)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_Input_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_Output_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_UndirectGraph_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_Edge_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_Node_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_Edge_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_GraphPartition_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::pb::_Submission_default_instance_),
 };
@@ -271,31 +231,25 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 7);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 6);
 }
 
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\024GraphPartition.proto\022\002pb\"\266\002\n\016GraphPart"
-      "ition\032\\\n\005Input\022/\n\005graph\030\001 \001(\0132 .pb.Graph"
-      "Partition.UndirectGraph\022\017\n\007partNum\030\002 \001(\005"
-      "\022\021\n\timbalance\030\003 \001(\001\032\033\n\006Output\022\021\n\tnodePar"
-      "ts\030\001 \003(\005\032_\n\rUndirectGraph\022&\n\005edges\030\001 \003(\013"
-      "2\027.pb.GraphPartition.Edge\022&\n\005nodes\030\002 \003(\013"
-      "2\027.pb.GraphPartition.Node\0320\n\004Edge\022\013\n\003beg"
-      "\030\001 \001(\005\022\013\n\003end\030\002 \001(\005\022\016\n\006weight\030\003 \001(\005\032\026\n\004N"
-      "ode\022\016\n\006weight\030\001 \001(\005\"\350\001\n\nSubmission\022\016\n\006au"
-      "thor\030\001 \001(\t\022\021\n\talgorithm\030\002 \001(\t\022\016\n\006thread\030"
-      "\003 \001(\t\022\013\n\003cpu\030\004 \001(\t\022\013\n\003ram\030\005 \001(\t\022\020\n\010langu"
-      "age\030\006 \001(\t\022\020\n\010compiler\030\007 \001(\t\022\n\n\002os\030\010 \001(\t\022"
-      "\017\n\007problem\030\025 \001(\t\022\020\n\010instance\030\026 \001(\t\022\020\n\010du"
-      "ration\030\027 \001(\t\022\013\n\003obj\030\037 \001(\001\022\r\n\005email\030  \001(\t"
-      "\022\014\n\004date\030! \001(\tB\024\n\002pbB\016GraphPartitionb\006pr"
-      "oto3"
+      "\n\024GraphPartition.proto\022\002pb\"\311\001\n\016GraphPart"
+      "ition\032W\n\005Input\022&\n\005nodes\030\001 \003(\0132\027.pb.Graph"
+      "Partition.Node\022&\n\005edges\030\002 \003(\0132\027.pb.Graph"
+      "Partition.Edge\032\032\n\006Output\022\020\n\010nodepart\030\001 \003"
+      "(\005\032\023\n\004Node\022\013\n\003wgt\030\001 \001(\005\032-\n\004Edge\022\013\n\003beg\030\001"
+      " \001(\005\022\013\n\003end\030\002 \001(\005\022\013\n\003wgt\030\003 \001(\005\"r\n\nSubmis"
+      "sion\022\017\n\007problem\030\001 \001(\t\022\020\n\010instance\030\002 \001(\t\022"
+      "\017\n\007partnum\030\003 \001(\005\022\013\n\003obj\030\013 \001(\005\022\021\n\timbalan"
+      "ce\030\014 \001(\001\022\020\n\010duration\030\r \001(\tB\024\n\002pbB\016GraphP"
+      "artitionb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 604);
+      descriptor, 376);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "GraphPartition.proto", &protobuf_RegisterTypes);
 }
@@ -316,13 +270,10 @@ namespace pb {
 // ===================================================================
 
 void GraphPartition_Input::InitAsDefaultInstance() {
-  ::pb::_GraphPartition_Input_default_instance_._instance.get_mutable()->graph_ = const_cast< ::pb::GraphPartition_UndirectGraph*>(
-      ::pb::GraphPartition_UndirectGraph::internal_default_instance());
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GraphPartition_Input::kGraphFieldNumber;
-const int GraphPartition_Input::kPartNumFieldNumber;
-const int GraphPartition_Input::kImbalanceFieldNumber;
+const int GraphPartition_Input::kNodesFieldNumber;
+const int GraphPartition_Input::kEdgesFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GraphPartition_Input::GraphPartition_Input()
@@ -334,23 +285,14 @@ GraphPartition_Input::GraphPartition_Input()
 }
 GraphPartition_Input::GraphPartition_Input(const GraphPartition_Input& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
+      _internal_metadata_(NULL),
+      nodes_(from.nodes_),
+      edges_(from.edges_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_graph()) {
-    graph_ = new ::pb::GraphPartition_UndirectGraph(*from.graph_);
-  } else {
-    graph_ = NULL;
-  }
-  ::memcpy(&imbalance_, &from.imbalance_,
-    static_cast<size_t>(reinterpret_cast<char*>(&partnum_) -
-    reinterpret_cast<char*>(&imbalance_)) + sizeof(partnum_));
   // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.Input)
 }
 
 void GraphPartition_Input::SharedCtor() {
-  ::memset(&graph_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&partnum_) -
-      reinterpret_cast<char*>(&graph_)) + sizeof(partnum_));
 }
 
 GraphPartition_Input::~GraphPartition_Input() {
@@ -359,7 +301,6 @@ GraphPartition_Input::~GraphPartition_Input() {
 }
 
 void GraphPartition_Input::SharedDtor() {
-  if (this != internal_default_instance()) delete graph_;
 }
 
 void GraphPartition_Input::SetCachedSize(int size) const {
@@ -382,13 +323,8 @@ void GraphPartition_Input::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArenaNoVirtual() == NULL && graph_ != NULL) {
-    delete graph_;
-  }
-  graph_ = NULL;
-  ::memset(&imbalance_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&partnum_) -
-      reinterpret_cast<char*>(&imbalance_)) + sizeof(partnum_));
+  nodes_.Clear();
+  edges_.Clear();
   _internal_metadata_.Clear();
 }
 
@@ -402,40 +338,24 @@ bool GraphPartition_Input::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .pb.GraphPartition.UndirectGraph graph = 1;
+      // repeated .pb.GraphPartition.Node nodes = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_graph()));
+                input, add_nodes()));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // int32 partNum = 2;
+      // repeated .pb.GraphPartition.Edge edges = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &partnum_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // double imbalance = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(25u /* 25 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, &imbalance_)));
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+                input, add_edges()));
         } else {
           goto handle_unusual;
         }
@@ -468,20 +388,22 @@ void GraphPartition_Input::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .pb.GraphPartition.UndirectGraph graph = 1;
-  if (this->has_graph()) {
+  // repeated .pb.GraphPartition.Node nodes = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->nodes_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_graph(), output);
+      1,
+      this->nodes(static_cast<int>(i)),
+      output);
   }
 
-  // int32 partNum = 2;
-  if (this->partnum() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->partnum(), output);
-  }
-
-  // double imbalance = 3;
-  if (this->imbalance() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(3, this->imbalance(), output);
+  // repeated .pb.GraphPartition.Edge edges = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->edges_size()); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2,
+      this->edges(static_cast<int>(i)),
+      output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -498,21 +420,20 @@ void GraphPartition_Input::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .pb.GraphPartition.UndirectGraph graph = 1;
-  if (this->has_graph()) {
+  // repeated .pb.GraphPartition.Node nodes = 1;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->nodes_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
-        1, this->_internal_graph(), deterministic, target);
+        1, this->nodes(static_cast<int>(i)), deterministic, target);
   }
 
-  // int32 partNum = 2;
-  if (this->partnum() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->partnum(), target);
-  }
-
-  // double imbalance = 3;
-  if (this->imbalance() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(3, this->imbalance(), target);
+  // repeated .pb.GraphPartition.Edge edges = 2;
+  for (unsigned int i = 0,
+      n = static_cast<unsigned int>(this->edges_size()); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        2, this->edges(static_cast<int>(i)), deterministic, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -532,23 +453,26 @@ size_t GraphPartition_Input::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // .pb.GraphPartition.UndirectGraph graph = 1;
-  if (this->has_graph()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *graph_);
+  // repeated .pb.GraphPartition.Node nodes = 1;
+  {
+    unsigned int count = static_cast<unsigned int>(this->nodes_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->nodes(static_cast<int>(i)));
+    }
   }
 
-  // double imbalance = 3;
-  if (this->imbalance() != 0) {
-    total_size += 1 + 8;
-  }
-
-  // int32 partNum = 2;
-  if (this->partnum() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->partnum());
+  // repeated .pb.GraphPartition.Edge edges = 2;
+  {
+    unsigned int count = static_cast<unsigned int>(this->edges_size());
+    total_size += 1UL * count;
+    for (unsigned int i = 0; i < count; i++) {
+      total_size +=
+        ::google::protobuf::internal::WireFormatLite::MessageSize(
+          this->edges(static_cast<int>(i)));
+    }
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -578,15 +502,8 @@ void GraphPartition_Input::MergeFrom(const GraphPartition_Input& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.has_graph()) {
-    mutable_graph()->::pb::GraphPartition_UndirectGraph::MergeFrom(from.graph());
-  }
-  if (from.imbalance() != 0) {
-    set_imbalance(from.imbalance());
-  }
-  if (from.partnum() != 0) {
-    set_partnum(from.partnum());
-  }
+  nodes_.MergeFrom(from.nodes_);
+  edges_.MergeFrom(from.edges_);
 }
 
 void GraphPartition_Input::CopyFrom(const ::google::protobuf::Message& from) {
@@ -613,9 +530,8 @@ void GraphPartition_Input::Swap(GraphPartition_Input* other) {
 }
 void GraphPartition_Input::InternalSwap(GraphPartition_Input* other) {
   using std::swap;
-  swap(graph_, other->graph_);
-  swap(imbalance_, other->imbalance_);
-  swap(partnum_, other->partnum_);
+  CastToBase(&nodes_)->InternalSwap(CastToBase(&other->nodes_));
+  CastToBase(&edges_)->InternalSwap(CastToBase(&other->edges_));
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -630,7 +546,7 @@ void GraphPartition_Input::InternalSwap(GraphPartition_Input* other) {
 void GraphPartition_Output::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GraphPartition_Output::kNodePartsFieldNumber;
+const int GraphPartition_Output::kNodepartFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GraphPartition_Output::GraphPartition_Output()
@@ -643,7 +559,7 @@ GraphPartition_Output::GraphPartition_Output()
 GraphPartition_Output::GraphPartition_Output(const GraphPartition_Output& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL),
-      nodeparts_(from.nodeparts_) {
+      nodepart_(from.nodepart_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.Output)
 }
@@ -679,7 +595,7 @@ void GraphPartition_Output::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  nodeparts_.Clear();
+  nodepart_.Clear();
   _internal_metadata_.Clear();
 }
 
@@ -693,19 +609,19 @@ bool GraphPartition_Output::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated int32 nodeParts = 1;
+      // repeated int32 nodepart = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, this->mutable_nodeparts())));
+                 input, this->mutable_nodepart())));
         } else if (
             static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 1, 10u, input, this->mutable_nodeparts())));
+                 1, 10u, input, this->mutable_nodepart())));
         } else {
           goto handle_unusual;
         }
@@ -738,15 +654,15 @@ void GraphPartition_Output::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated int32 nodeParts = 1;
-  if (this->nodeparts_size() > 0) {
+  // repeated int32 nodepart = 1;
+  if (this->nodepart_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(static_cast< ::google::protobuf::uint32>(
-        _nodeparts_cached_byte_size_));
+        _nodepart_cached_byte_size_));
   }
-  for (int i = 0, n = this->nodeparts_size(); i < n; i++) {
+  for (int i = 0, n = this->nodepart_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32NoTag(
-      this->nodeparts(i), output);
+      this->nodepart(i), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -763,17 +679,17 @@ void GraphPartition_Output::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated int32 nodeParts = 1;
-  if (this->nodeparts_size() > 0) {
+  // repeated int32 nodepart = 1;
+  if (this->nodepart_size() > 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
       1,
       ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
       target);
     target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
         static_cast< ::google::protobuf::int32>(
-            _nodeparts_cached_byte_size_), target);
+            _nodepart_cached_byte_size_), target);
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteInt32NoTagToArray(this->nodeparts_, target);
+      WriteInt32NoTagToArray(this->nodepart_, target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -793,10 +709,10 @@ size_t GraphPartition_Output::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // repeated int32 nodeParts = 1;
+  // repeated int32 nodepart = 1;
   {
     size_t data_size = ::google::protobuf::internal::WireFormatLite::
-      Int32Size(this->nodeparts_);
+      Int32Size(this->nodepart_);
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
@@ -804,7 +720,7 @@ size_t GraphPartition_Output::ByteSizeLong() const {
     }
     int cached_size = ::google::protobuf::internal::ToCachedSize(data_size);
     GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _nodeparts_cached_byte_size_ = cached_size;
+    _nodepart_cached_byte_size_ = cached_size;
     GOOGLE_SAFE_CONCURRENT_WRITES_END();
     total_size += data_size;
   }
@@ -836,7 +752,7 @@ void GraphPartition_Output::MergeFrom(const GraphPartition_Output& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  nodeparts_.MergeFrom(from.nodeparts_);
+  nodepart_.MergeFrom(from.nodepart_);
 }
 
 void GraphPartition_Output::CopyFrom(const ::google::protobuf::Message& from) {
@@ -863,7 +779,7 @@ void GraphPartition_Output::Swap(GraphPartition_Output* other) {
 }
 void GraphPartition_Output::InternalSwap(GraphPartition_Output* other) {
   using std::swap;
-  nodeparts_.InternalSwap(&other->nodeparts_);
+  nodepart_.InternalSwap(&other->nodepart_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -875,93 +791,81 @@ void GraphPartition_Output::InternalSwap(GraphPartition_Output* other) {
 
 // ===================================================================
 
-void GraphPartition_UndirectGraph::InitAsDefaultInstance() {
+void GraphPartition_Node::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GraphPartition_UndirectGraph::kEdgesFieldNumber;
-const int GraphPartition_UndirectGraph::kNodesFieldNumber;
+const int GraphPartition_Node::kWgtFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-GraphPartition_UndirectGraph::GraphPartition_UndirectGraph()
+GraphPartition_Node::GraphPartition_Node()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   ::google::protobuf::internal::InitSCC(
-      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_UndirectGraph.base);
+      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base);
   SharedCtor();
-  // @@protoc_insertion_point(constructor:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(constructor:pb.GraphPartition.Node)
 }
-GraphPartition_UndirectGraph::GraphPartition_UndirectGraph(const GraphPartition_UndirectGraph& from)
+GraphPartition_Node::GraphPartition_Node(const GraphPartition_Node& from)
   : ::google::protobuf::Message(),
-      _internal_metadata_(NULL),
-      edges_(from.edges_),
-      nodes_(from.nodes_) {
+      _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.UndirectGraph)
+  wgt_ = from.wgt_;
+  // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.Node)
 }
 
-void GraphPartition_UndirectGraph::SharedCtor() {
+void GraphPartition_Node::SharedCtor() {
+  wgt_ = 0;
 }
 
-GraphPartition_UndirectGraph::~GraphPartition_UndirectGraph() {
-  // @@protoc_insertion_point(destructor:pb.GraphPartition.UndirectGraph)
+GraphPartition_Node::~GraphPartition_Node() {
+  // @@protoc_insertion_point(destructor:pb.GraphPartition.Node)
   SharedDtor();
 }
 
-void GraphPartition_UndirectGraph::SharedDtor() {
+void GraphPartition_Node::SharedDtor() {
 }
 
-void GraphPartition_UndirectGraph::SetCachedSize(int size) const {
+void GraphPartition_Node::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* GraphPartition_UndirectGraph::descriptor() {
+const ::google::protobuf::Descriptor* GraphPartition_Node::descriptor() {
   ::protobuf_GraphPartition_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_GraphPartition_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
 }
 
-const GraphPartition_UndirectGraph& GraphPartition_UndirectGraph::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_GraphPartition_2eproto::scc_info_GraphPartition_UndirectGraph.base);
+const GraphPartition_Node& GraphPartition_Node::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base);
   return *internal_default_instance();
 }
 
 
-void GraphPartition_UndirectGraph::Clear() {
-// @@protoc_insertion_point(message_clear_start:pb.GraphPartition.UndirectGraph)
+void GraphPartition_Node::Clear() {
+// @@protoc_insertion_point(message_clear_start:pb.GraphPartition.Node)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  edges_.Clear();
-  nodes_.Clear();
+  wgt_ = 0;
   _internal_metadata_.Clear();
 }
 
-bool GraphPartition_UndirectGraph::MergePartialFromCodedStream(
+bool GraphPartition_Node::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(parse_start:pb.GraphPartition.Node)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .pb.GraphPartition.Edge edges = 1;
+      // int32 wgt = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_edges()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
 
-      // repeated .pb.GraphPartition.Node nodes = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-                input, add_nodes()));
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &wgt_)));
         } else {
           goto handle_unusual;
         }
@@ -980,78 +884,54 @@ bool GraphPartition_UndirectGraph::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(parse_success:pb.GraphPartition.Node)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(parse_failure:pb.GraphPartition.Node)
   return false;
 #undef DO_
 }
 
-void GraphPartition_UndirectGraph::SerializeWithCachedSizes(
+void GraphPartition_Node::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(serialize_start:pb.GraphPartition.Node)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .pb.GraphPartition.Edge edges = 1;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->edges_size()); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1,
-      this->edges(static_cast<int>(i)),
-      output);
-  }
-
-  // repeated .pb.GraphPartition.Node nodes = 2;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->nodes_size()); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2,
-      this->nodes(static_cast<int>(i)),
-      output);
+  // int32 wgt = 1;
+  if (this->wgt() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->wgt(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(serialize_end:pb.GraphPartition.Node)
 }
 
-::google::protobuf::uint8* GraphPartition_UndirectGraph::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* GraphPartition_Node::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(serialize_to_array_start:pb.GraphPartition.Node)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .pb.GraphPartition.Edge edges = 1;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->edges_size()); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->edges(static_cast<int>(i)), deterministic, target);
-  }
-
-  // repeated .pb.GraphPartition.Node nodes = 2;
-  for (unsigned int i = 0,
-      n = static_cast<unsigned int>(this->nodes_size()); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        2, this->nodes(static_cast<int>(i)), deterministic, target);
+  // int32 wgt = 1;
+  if (this->wgt() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->wgt(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(serialize_to_array_end:pb.GraphPartition.Node)
   return target;
 }
 
-size_t GraphPartition_UndirectGraph::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:pb.GraphPartition.UndirectGraph)
+size_t GraphPartition_Node::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:pb.GraphPartition.Node)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1059,26 +939,11 @@ size_t GraphPartition_UndirectGraph::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // repeated .pb.GraphPartition.Edge edges = 1;
-  {
-    unsigned int count = static_cast<unsigned int>(this->edges_size());
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
-          this->edges(static_cast<int>(i)));
-    }
-  }
-
-  // repeated .pb.GraphPartition.Node nodes = 2;
-  {
-    unsigned int count = static_cast<unsigned int>(this->nodes_size());
-    total_size += 1UL * count;
-    for (unsigned int i = 0; i < count; i++) {
-      total_size +=
-        ::google::protobuf::internal::WireFormatLite::MessageSize(
-          this->nodes(static_cast<int>(i)));
-    }
+  // int32 wgt = 1;
+  if (this->wgt() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->wgt());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1086,62 +951,62 @@ size_t GraphPartition_UndirectGraph::ByteSizeLong() const {
   return total_size;
 }
 
-void GraphPartition_UndirectGraph::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:pb.GraphPartition.UndirectGraph)
+void GraphPartition_Node::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:pb.GraphPartition.Node)
   GOOGLE_DCHECK_NE(&from, this);
-  const GraphPartition_UndirectGraph* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const GraphPartition_UndirectGraph>(
+  const GraphPartition_Node* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const GraphPartition_Node>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:pb.GraphPartition.Node)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:pb.GraphPartition.UndirectGraph)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:pb.GraphPartition.Node)
     MergeFrom(*source);
   }
 }
 
-void GraphPartition_UndirectGraph::MergeFrom(const GraphPartition_UndirectGraph& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:pb.GraphPartition.UndirectGraph)
+void GraphPartition_Node::MergeFrom(const GraphPartition_Node& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:pb.GraphPartition.Node)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  edges_.MergeFrom(from.edges_);
-  nodes_.MergeFrom(from.nodes_);
+  if (from.wgt() != 0) {
+    set_wgt(from.wgt());
+  }
 }
 
-void GraphPartition_UndirectGraph::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:pb.GraphPartition.UndirectGraph)
+void GraphPartition_Node::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:pb.GraphPartition.Node)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void GraphPartition_UndirectGraph::CopyFrom(const GraphPartition_UndirectGraph& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:pb.GraphPartition.UndirectGraph)
+void GraphPartition_Node::CopyFrom(const GraphPartition_Node& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:pb.GraphPartition.Node)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool GraphPartition_UndirectGraph::IsInitialized() const {
+bool GraphPartition_Node::IsInitialized() const {
   return true;
 }
 
-void GraphPartition_UndirectGraph::Swap(GraphPartition_UndirectGraph* other) {
+void GraphPartition_Node::Swap(GraphPartition_Node* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void GraphPartition_UndirectGraph::InternalSwap(GraphPartition_UndirectGraph* other) {
+void GraphPartition_Node::InternalSwap(GraphPartition_Node* other) {
   using std::swap;
-  CastToBase(&edges_)->InternalSwap(CastToBase(&other->edges_));
-  CastToBase(&nodes_)->InternalSwap(CastToBase(&other->nodes_));
+  swap(wgt_, other->wgt_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata GraphPartition_UndirectGraph::GetMetadata() const {
+::google::protobuf::Metadata GraphPartition_Node::GetMetadata() const {
   protobuf_GraphPartition_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_GraphPartition_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -1154,7 +1019,7 @@ void GraphPartition_Edge::InitAsDefaultInstance() {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int GraphPartition_Edge::kBegFieldNumber;
 const int GraphPartition_Edge::kEndFieldNumber;
-const int GraphPartition_Edge::kWeightFieldNumber;
+const int GraphPartition_Edge::kWgtFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 GraphPartition_Edge::GraphPartition_Edge()
@@ -1169,15 +1034,15 @@ GraphPartition_Edge::GraphPartition_Edge(const GraphPartition_Edge& from)
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::memcpy(&beg_, &from.beg_,
-    static_cast<size_t>(reinterpret_cast<char*>(&weight_) -
-    reinterpret_cast<char*>(&beg_)) + sizeof(weight_));
+    static_cast<size_t>(reinterpret_cast<char*>(&wgt_) -
+    reinterpret_cast<char*>(&beg_)) + sizeof(wgt_));
   // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.Edge)
 }
 
 void GraphPartition_Edge::SharedCtor() {
   ::memset(&beg_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&weight_) -
-      reinterpret_cast<char*>(&beg_)) + sizeof(weight_));
+      reinterpret_cast<char*>(&wgt_) -
+      reinterpret_cast<char*>(&beg_)) + sizeof(wgt_));
 }
 
 GraphPartition_Edge::~GraphPartition_Edge() {
@@ -1209,8 +1074,8 @@ void GraphPartition_Edge::Clear() {
   (void) cached_has_bits;
 
   ::memset(&beg_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&weight_) -
-      reinterpret_cast<char*>(&beg_)) + sizeof(weight_));
+      reinterpret_cast<char*>(&wgt_) -
+      reinterpret_cast<char*>(&beg_)) + sizeof(wgt_));
   _internal_metadata_.Clear();
 }
 
@@ -1252,14 +1117,14 @@ bool GraphPartition_Edge::MergePartialFromCodedStream(
         break;
       }
 
-      // int32 weight = 3;
+      // int32 wgt = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &weight_)));
+                 input, &wgt_)));
         } else {
           goto handle_unusual;
         }
@@ -1302,9 +1167,9 @@ void GraphPartition_Edge::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->end(), output);
   }
 
-  // int32 weight = 3;
-  if (this->weight() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->weight(), output);
+  // int32 wgt = 3;
+  if (this->wgt() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->wgt(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1331,9 +1196,9 @@ void GraphPartition_Edge::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->end(), target);
   }
 
-  // int32 weight = 3;
-  if (this->weight() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->weight(), target);
+  // int32 wgt = 3;
+  if (this->wgt() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->wgt(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -1367,11 +1232,11 @@ size_t GraphPartition_Edge::ByteSizeLong() const {
         this->end());
   }
 
-  // int32 weight = 3;
-  if (this->weight() != 0) {
+  // int32 wgt = 3;
+  if (this->wgt() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->weight());
+        this->wgt());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1407,8 +1272,8 @@ void GraphPartition_Edge::MergeFrom(const GraphPartition_Edge& from) {
   if (from.end() != 0) {
     set_end(from.end());
   }
-  if (from.weight() != 0) {
-    set_weight(from.weight());
+  if (from.wgt() != 0) {
+    set_wgt(from.wgt());
   }
 }
 
@@ -1438,234 +1303,11 @@ void GraphPartition_Edge::InternalSwap(GraphPartition_Edge* other) {
   using std::swap;
   swap(beg_, other->beg_);
   swap(end_, other->end_);
-  swap(weight_, other->weight_);
+  swap(wgt_, other->wgt_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata GraphPartition_Edge::GetMetadata() const {
-  protobuf_GraphPartition_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_GraphPartition_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void GraphPartition_Node::InitAsDefaultInstance() {
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int GraphPartition_Node::kWeightFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-GraphPartition_Node::GraphPartition_Node()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:pb.GraphPartition.Node)
-}
-GraphPartition_Node::GraphPartition_Node(const GraphPartition_Node& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  weight_ = from.weight_;
-  // @@protoc_insertion_point(copy_constructor:pb.GraphPartition.Node)
-}
-
-void GraphPartition_Node::SharedCtor() {
-  weight_ = 0;
-}
-
-GraphPartition_Node::~GraphPartition_Node() {
-  // @@protoc_insertion_point(destructor:pb.GraphPartition.Node)
-  SharedDtor();
-}
-
-void GraphPartition_Node::SharedDtor() {
-}
-
-void GraphPartition_Node::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* GraphPartition_Node::descriptor() {
-  ::protobuf_GraphPartition_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_GraphPartition_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const GraphPartition_Node& GraphPartition_Node::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_GraphPartition_2eproto::scc_info_GraphPartition_Node.base);
-  return *internal_default_instance();
-}
-
-
-void GraphPartition_Node::Clear() {
-// @@protoc_insertion_point(message_clear_start:pb.GraphPartition.Node)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  weight_ = 0;
-  _internal_metadata_.Clear();
-}
-
-bool GraphPartition_Node::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:pb.GraphPartition.Node)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // int32 weight = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &weight_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:pb.GraphPartition.Node)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:pb.GraphPartition.Node)
-  return false;
-#undef DO_
-}
-
-void GraphPartition_Node::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:pb.GraphPartition.Node)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // int32 weight = 1;
-  if (this->weight() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->weight(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:pb.GraphPartition.Node)
-}
-
-::google::protobuf::uint8* GraphPartition_Node::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:pb.GraphPartition.Node)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // int32 weight = 1;
-  if (this->weight() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->weight(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:pb.GraphPartition.Node)
-  return target;
-}
-
-size_t GraphPartition_Node::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:pb.GraphPartition.Node)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // int32 weight = 1;
-  if (this->weight() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->weight());
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void GraphPartition_Node::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:pb.GraphPartition.Node)
-  GOOGLE_DCHECK_NE(&from, this);
-  const GraphPartition_Node* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const GraphPartition_Node>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:pb.GraphPartition.Node)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:pb.GraphPartition.Node)
-    MergeFrom(*source);
-  }
-}
-
-void GraphPartition_Node::MergeFrom(const GraphPartition_Node& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:pb.GraphPartition.Node)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.weight() != 0) {
-    set_weight(from.weight());
-  }
-}
-
-void GraphPartition_Node::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:pb.GraphPartition.Node)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void GraphPartition_Node::CopyFrom(const GraphPartition_Node& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:pb.GraphPartition.Node)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool GraphPartition_Node::IsInitialized() const {
-  return true;
-}
-
-void GraphPartition_Node::Swap(GraphPartition_Node* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void GraphPartition_Node::InternalSwap(GraphPartition_Node* other) {
-  using std::swap;
-  swap(weight_, other->weight_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata GraphPartition_Node::GetMetadata() const {
   protobuf_GraphPartition_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_GraphPartition_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -1855,20 +1497,12 @@ void GraphPartition::InternalSwap(GraphPartition* other) {
 void Submission::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Submission::kAuthorFieldNumber;
-const int Submission::kAlgorithmFieldNumber;
-const int Submission::kThreadFieldNumber;
-const int Submission::kCpuFieldNumber;
-const int Submission::kRamFieldNumber;
-const int Submission::kLanguageFieldNumber;
-const int Submission::kCompilerFieldNumber;
-const int Submission::kOsFieldNumber;
 const int Submission::kProblemFieldNumber;
 const int Submission::kInstanceFieldNumber;
-const int Submission::kDurationFieldNumber;
+const int Submission::kPartnumFieldNumber;
 const int Submission::kObjFieldNumber;
-const int Submission::kEmailFieldNumber;
-const int Submission::kDateFieldNumber;
+const int Submission::kImbalanceFieldNumber;
+const int Submission::kDurationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Submission::Submission()
@@ -1882,38 +1516,6 @@ Submission::Submission(const Submission& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  author_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.author().size() > 0) {
-    author_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.author_);
-  }
-  algorithm_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.algorithm().size() > 0) {
-    algorithm_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.algorithm_);
-  }
-  thread_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.thread().size() > 0) {
-    thread_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.thread_);
-  }
-  cpu_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.cpu().size() > 0) {
-    cpu_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cpu_);
-  }
-  ram_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.ram().size() > 0) {
-    ram_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ram_);
-  }
-  language_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.language().size() > 0) {
-    language_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.language_);
-  }
-  compiler_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.compiler().size() > 0) {
-    compiler_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.compiler_);
-  }
-  os_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.os().size() > 0) {
-    os_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.os_);
-  }
   problem_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.problem().size() > 0) {
     problem_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.problem_);
@@ -1926,33 +1528,19 @@ Submission::Submission(const Submission& from)
   if (from.duration().size() > 0) {
     duration_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.duration_);
   }
-  email_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.email().size() > 0) {
-    email_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.email_);
-  }
-  date_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.date().size() > 0) {
-    date_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.date_);
-  }
-  obj_ = from.obj_;
+  ::memcpy(&partnum_, &from.partnum_,
+    static_cast<size_t>(reinterpret_cast<char*>(&imbalance_) -
+    reinterpret_cast<char*>(&partnum_)) + sizeof(imbalance_));
   // @@protoc_insertion_point(copy_constructor:pb.Submission)
 }
 
 void Submission::SharedCtor() {
-  author_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  algorithm_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  thread_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  cpu_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ram_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  language_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  compiler_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  os_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   problem_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   instance_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   duration_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  email_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  date_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  obj_ = 0;
+  ::memset(&partnum_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&imbalance_) -
+      reinterpret_cast<char*>(&partnum_)) + sizeof(imbalance_));
 }
 
 Submission::~Submission() {
@@ -1961,19 +1549,9 @@ Submission::~Submission() {
 }
 
 void Submission::SharedDtor() {
-  author_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  algorithm_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  thread_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  cpu_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ram_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  language_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  compiler_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  os_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   problem_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   instance_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   duration_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  email_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  date_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 void Submission::SetCachedSize(int size) const {
@@ -1996,20 +1574,12 @@ void Submission::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  author_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  algorithm_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  thread_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  cpu_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  language_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  compiler_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  os_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   problem_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   instance_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   duration_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  email_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  obj_ = 0;
+  ::memset(&partnum_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&imbalance_) -
+      reinterpret_cast<char*>(&partnum_)) + sizeof(imbalance_));
   _internal_metadata_.Clear();
 }
 
@@ -2019,142 +1589,14 @@ bool Submission::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:pb.Submission)
   for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string author = 1;
+      // string problem = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_author()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->author().data(), static_cast<int>(this->author().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.author"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string algorithm = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_algorithm()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->algorithm().data(), static_cast<int>(this->algorithm().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.algorithm"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string thread = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_thread()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->thread().data(), static_cast<int>(this->thread().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.thread"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string cpu = 4;
-      case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_cpu()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->cpu().data(), static_cast<int>(this->cpu().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.cpu"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string ram = 5;
-      case 5: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_ram()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->ram().data(), static_cast<int>(this->ram().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.ram"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string language = 6;
-      case 6: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(50u /* 50 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_language()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->language().data(), static_cast<int>(this->language().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.language"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string compiler = 7;
-      case 7: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(58u /* 58 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_compiler()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->compiler().data(), static_cast<int>(this->compiler().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.compiler"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string os = 8;
-      case 8: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(66u /* 66 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_os()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->os().data(), static_cast<int>(this->os().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.os"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string problem = 21;
-      case 21: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(170u /* 170 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_problem()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -2167,10 +1609,10 @@ bool Submission::MergePartialFromCodedStream(
         break;
       }
 
-      // string instance = 22;
-      case 22: {
+      // string instance = 2;
+      case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(178u /* 178 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_instance()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
@@ -2183,29 +1625,27 @@ bool Submission::MergePartialFromCodedStream(
         break;
       }
 
-      // string duration = 23;
-      case 23: {
+      // int32 partnum = 3;
+      case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(186u /* 186 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_duration()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->duration().data(), static_cast<int>(this->duration().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.duration"));
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &partnum_)));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // double obj = 31;
-      case 31: {
+      // int32 obj = 11;
+      case 11: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(249u /* 249 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(88u /* 88 & 0xFF */)) {
 
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &obj_)));
         } else {
           goto handle_unusual;
@@ -2213,32 +1653,30 @@ bool Submission::MergePartialFromCodedStream(
         break;
       }
 
-      // string email = 32;
-      case 32: {
+      // double imbalance = 12;
+      case 12: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(2u /* 258 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_email()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->email().data(), static_cast<int>(this->email().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.email"));
+            static_cast< ::google::protobuf::uint8>(97u /* 97 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &imbalance_)));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // string date = 33;
-      case 33: {
+      // string duration = 13;
+      case 13: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 266 & 0xFF */)) {
+            static_cast< ::google::protobuf::uint8>(106u /* 106 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_date()));
+                input, this->mutable_duration()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->date().data(), static_cast<int>(this->date().length()),
+            this->duration().data(), static_cast<int>(this->duration().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "pb.Submission.date"));
+            "pb.Submission.duration"));
         } else {
           goto handle_unusual;
         }
@@ -2271,139 +1709,49 @@ void Submission::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string author = 1;
-  if (this->author().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->author().data(), static_cast<int>(this->author().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.author");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->author(), output);
-  }
-
-  // string algorithm = 2;
-  if (this->algorithm().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->algorithm().data(), static_cast<int>(this->algorithm().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.algorithm");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->algorithm(), output);
-  }
-
-  // string thread = 3;
-  if (this->thread().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->thread().data(), static_cast<int>(this->thread().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.thread");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->thread(), output);
-  }
-
-  // string cpu = 4;
-  if (this->cpu().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->cpu().data(), static_cast<int>(this->cpu().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.cpu");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->cpu(), output);
-  }
-
-  // string ram = 5;
-  if (this->ram().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->ram().data(), static_cast<int>(this->ram().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.ram");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      5, this->ram(), output);
-  }
-
-  // string language = 6;
-  if (this->language().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->language().data(), static_cast<int>(this->language().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.language");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      6, this->language(), output);
-  }
-
-  // string compiler = 7;
-  if (this->compiler().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->compiler().data(), static_cast<int>(this->compiler().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.compiler");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      7, this->compiler(), output);
-  }
-
-  // string os = 8;
-  if (this->os().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->os().data(), static_cast<int>(this->os().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.os");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      8, this->os(), output);
-  }
-
-  // string problem = 21;
+  // string problem = 1;
   if (this->problem().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->problem().data(), static_cast<int>(this->problem().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "pb.Submission.problem");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      21, this->problem(), output);
+      1, this->problem(), output);
   }
 
-  // string instance = 22;
+  // string instance = 2;
   if (this->instance().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->instance().data(), static_cast<int>(this->instance().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "pb.Submission.instance");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      22, this->instance(), output);
+      2, this->instance(), output);
   }
 
-  // string duration = 23;
+  // int32 partnum = 3;
+  if (this->partnum() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->partnum(), output);
+  }
+
+  // int32 obj = 11;
+  if (this->obj() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(11, this->obj(), output);
+  }
+
+  // double imbalance = 12;
+  if (this->imbalance() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(12, this->imbalance(), output);
+  }
+
+  // string duration = 13;
   if (this->duration().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->duration().data(), static_cast<int>(this->duration().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "pb.Submission.duration");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      23, this->duration(), output);
-  }
-
-  // double obj = 31;
-  if (this->obj() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(31, this->obj(), output);
-  }
-
-  // string email = 32;
-  if (this->email().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->email().data(), static_cast<int>(this->email().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.email");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      32, this->email(), output);
-  }
-
-  // string date = 33;
-  if (this->date().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->date().data(), static_cast<int>(this->date().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.date");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      33, this->date(), output);
+      13, this->duration(), output);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2420,95 +1768,7 @@ void Submission::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string author = 1;
-  if (this->author().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->author().data(), static_cast<int>(this->author().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.author");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->author(), target);
-  }
-
-  // string algorithm = 2;
-  if (this->algorithm().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->algorithm().data(), static_cast<int>(this->algorithm().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.algorithm");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->algorithm(), target);
-  }
-
-  // string thread = 3;
-  if (this->thread().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->thread().data(), static_cast<int>(this->thread().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.thread");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->thread(), target);
-  }
-
-  // string cpu = 4;
-  if (this->cpu().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->cpu().data(), static_cast<int>(this->cpu().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.cpu");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->cpu(), target);
-  }
-
-  // string ram = 5;
-  if (this->ram().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->ram().data(), static_cast<int>(this->ram().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.ram");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->ram(), target);
-  }
-
-  // string language = 6;
-  if (this->language().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->language().data(), static_cast<int>(this->language().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.language");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        6, this->language(), target);
-  }
-
-  // string compiler = 7;
-  if (this->compiler().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->compiler().data(), static_cast<int>(this->compiler().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.compiler");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        7, this->compiler(), target);
-  }
-
-  // string os = 8;
-  if (this->os().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->os().data(), static_cast<int>(this->os().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.os");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        8, this->os(), target);
-  }
-
-  // string problem = 21;
+  // string problem = 1;
   if (this->problem().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->problem().data(), static_cast<int>(this->problem().length()),
@@ -2516,10 +1776,10 @@ void Submission::SerializeWithCachedSizes(
       "pb.Submission.problem");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        21, this->problem(), target);
+        1, this->problem(), target);
   }
 
-  // string instance = 22;
+  // string instance = 2;
   if (this->instance().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->instance().data(), static_cast<int>(this->instance().length()),
@@ -2527,10 +1787,25 @@ void Submission::SerializeWithCachedSizes(
       "pb.Submission.instance");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        22, this->instance(), target);
+        2, this->instance(), target);
   }
 
-  // string duration = 23;
+  // int32 partnum = 3;
+  if (this->partnum() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->partnum(), target);
+  }
+
+  // int32 obj = 11;
+  if (this->obj() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(11, this->obj(), target);
+  }
+
+  // double imbalance = 12;
+  if (this->imbalance() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(12, this->imbalance(), target);
+  }
+
+  // string duration = 13;
   if (this->duration().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->duration().data(), static_cast<int>(this->duration().length()),
@@ -2538,34 +1813,7 @@ void Submission::SerializeWithCachedSizes(
       "pb.Submission.duration");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        23, this->duration(), target);
-  }
-
-  // double obj = 31;
-  if (this->obj() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(31, this->obj(), target);
-  }
-
-  // string email = 32;
-  if (this->email().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->email().data(), static_cast<int>(this->email().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.email");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        32, this->email(), target);
-  }
-
-  // string date = 33;
-  if (this->date().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->date().data(), static_cast<int>(this->date().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "pb.Submission.date");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        33, this->date(), target);
+        13, this->duration(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2585,100 +1833,44 @@ size_t Submission::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
-  // string author = 1;
-  if (this->author().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->author());
-  }
-
-  // string algorithm = 2;
-  if (this->algorithm().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->algorithm());
-  }
-
-  // string thread = 3;
-  if (this->thread().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->thread());
-  }
-
-  // string cpu = 4;
-  if (this->cpu().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->cpu());
-  }
-
-  // string ram = 5;
-  if (this->ram().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->ram());
-  }
-
-  // string language = 6;
-  if (this->language().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->language());
-  }
-
-  // string compiler = 7;
-  if (this->compiler().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->compiler());
-  }
-
-  // string os = 8;
-  if (this->os().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->os());
-  }
-
-  // string problem = 21;
+  // string problem = 1;
   if (this->problem().size() > 0) {
-    total_size += 2 +
+    total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->problem());
   }
 
-  // string instance = 22;
+  // string instance = 2;
   if (this->instance().size() > 0) {
-    total_size += 2 +
+    total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->instance());
   }
 
-  // string duration = 23;
+  // string duration = 13;
   if (this->duration().size() > 0) {
-    total_size += 2 +
+    total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->duration());
   }
 
-  // string email = 32;
-  if (this->email().size() > 0) {
-    total_size += 2 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->email());
+  // int32 partnum = 3;
+  if (this->partnum() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->partnum());
   }
 
-  // string date = 33;
-  if (this->date().size() > 0) {
-    total_size += 2 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->date());
-  }
-
-  // double obj = 31;
+  // int32 obj = 11;
   if (this->obj() != 0) {
-    total_size += 2 + 8;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->obj());
+  }
+
+  // double imbalance = 12;
+  if (this->imbalance() != 0) {
+    total_size += 1 + 8;
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -2708,38 +1900,6 @@ void Submission::MergeFrom(const Submission& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.author().size() > 0) {
-
-    author_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.author_);
-  }
-  if (from.algorithm().size() > 0) {
-
-    algorithm_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.algorithm_);
-  }
-  if (from.thread().size() > 0) {
-
-    thread_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.thread_);
-  }
-  if (from.cpu().size() > 0) {
-
-    cpu_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.cpu_);
-  }
-  if (from.ram().size() > 0) {
-
-    ram_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ram_);
-  }
-  if (from.language().size() > 0) {
-
-    language_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.language_);
-  }
-  if (from.compiler().size() > 0) {
-
-    compiler_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.compiler_);
-  }
-  if (from.os().size() > 0) {
-
-    os_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.os_);
-  }
   if (from.problem().size() > 0) {
 
     problem_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.problem_);
@@ -2752,16 +1912,14 @@ void Submission::MergeFrom(const Submission& from) {
 
     duration_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.duration_);
   }
-  if (from.email().size() > 0) {
-
-    email_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.email_);
-  }
-  if (from.date().size() > 0) {
-
-    date_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.date_);
+  if (from.partnum() != 0) {
+    set_partnum(from.partnum());
   }
   if (from.obj() != 0) {
     set_obj(from.obj());
+  }
+  if (from.imbalance() != 0) {
+    set_imbalance(from.imbalance());
   }
 }
 
@@ -2789,33 +1947,15 @@ void Submission::Swap(Submission* other) {
 }
 void Submission::InternalSwap(Submission* other) {
   using std::swap;
-  author_.Swap(&other->author_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  algorithm_.Swap(&other->algorithm_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  thread_.Swap(&other->thread_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  cpu_.Swap(&other->cpu_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  ram_.Swap(&other->ram_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  language_.Swap(&other->language_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  compiler_.Swap(&other->compiler_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  os_.Swap(&other->os_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
   problem_.Swap(&other->problem_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   instance_.Swap(&other->instance_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   duration_.Swap(&other->duration_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
-  email_.Swap(&other->email_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  date_.Swap(&other->date_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
+  swap(partnum_, other->partnum_);
   swap(obj_, other->obj_);
+  swap(imbalance_, other->imbalance_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -2835,14 +1975,11 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_Input* Arena:
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_Output* Arena::CreateMaybeMessage< ::pb::GraphPartition_Output >(Arena* arena) {
   return Arena::CreateInternal< ::pb::GraphPartition_Output >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_UndirectGraph* Arena::CreateMaybeMessage< ::pb::GraphPartition_UndirectGraph >(Arena* arena) {
-  return Arena::CreateInternal< ::pb::GraphPartition_UndirectGraph >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_Node* Arena::CreateMaybeMessage< ::pb::GraphPartition_Node >(Arena* arena) {
+  return Arena::CreateInternal< ::pb::GraphPartition_Node >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_Edge* Arena::CreateMaybeMessage< ::pb::GraphPartition_Edge >(Arena* arena) {
   return Arena::CreateInternal< ::pb::GraphPartition_Edge >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition_Node* Arena::CreateMaybeMessage< ::pb::GraphPartition_Node >(Arena* arena) {
-  return Arena::CreateInternal< ::pb::GraphPartition_Node >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::pb::GraphPartition* Arena::CreateMaybeMessage< ::pb::GraphPartition >(Arena* arena) {
   return Arena::CreateInternal< ::pb::GraphPartition >(arena);

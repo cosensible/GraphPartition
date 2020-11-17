@@ -120,19 +120,18 @@ namespace szx {
 	void Simulator::benchmark(int repeat) {
 		Task task;
 		task.instSet = "";
-
-		task.instId = "abs.v1h6c1n200.1";
-		//task.randSeed = "1595666313";
-
-		task.timeout = "30";
+		task.timeout = "300";
 		task.jobNum = "1";
 		task.cfgPath = Env::DefaultCfgPath();
 		task.logPath = Env::DefaultLogPath();
+
 		for (int i = 0; i < repeat; ++i) {
-			task.randSeed = to_string(Random::generateSeed());
-			task.runId = to_string(i);
-			run(task);
-			this_thread::sleep_for(2s);
+			for (auto inst = instList.begin(); inst != instList.end(); ++inst) {
+				task.instId = *inst;
+				task.randSeed = to_string(Random::generateSeed());
+				task.runId = to_string(i);
+				run(task);
+			}
 		}
 	}
 
