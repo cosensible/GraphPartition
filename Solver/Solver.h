@@ -128,11 +128,13 @@ namespace szx {
 		};
 
 		struct GraphPartition {
-			int nodeNum = 0;
-			int partNum = 0;
+			int level;
+			int nodeNum;
+			int partNum;
 			std::shared_ptr<GraphAdjList> p2G;
 			List<int> nodesPart;
-			GraphPartition(std::shared_ptr<GraphAdjList> p2G, int pn) :nodeNum(p2G->nodes.size()), partNum(pn), p2G(p2G) {
+			GraphPartition(std::shared_ptr<GraphAdjList> p2G, int pn, int lev) :
+				level(lev), nodeNum(p2G->nodes.size()), partNum(pn), p2G(p2G) {
 				nodesPart.resize(nodeNum);
 			}
 		};
@@ -348,6 +350,7 @@ namespace szx {
 #pragma endregion Type
 
 #pragma region Constant
+		int itsStren = 20;
 
 #pragma endregion Constant
 
@@ -365,16 +368,19 @@ namespace szx {
 	protected:
 		void solve();
 		void coarsenGraph();
-		void coarsenGraph1();
+		void coarsenGraphImpv();
 		void initialPartition(GraphPartition &gp);
 		void uncoarsen(GraphPartition &gp);
 
-		void its_1m(GraphPartition &gp);
+		int findPart(TabuStruct &tss);
+		int findSecondPart(TabuStruct &tss, int firstPart);
+		int getBalanceQuality(TabuStruct &tss);
 		void its(GraphPartition &gp);
-		void perturbation(TabuStruct &tss);
-		void execMove(TabuStruct &tss, int node, int target, int gain = -1); // gain=-1 表示不更新 obj
+		void perturbation(int iter, TabuStruct &tss, int level);
+		void oldPerturb(int iter, TabuStruct &tss);
+		void execMove(int iter, TabuStruct &tss, List<int> &mv, bool enTabu = true);
 		List<int> selectSingleMove(int iter, TabuStruct &tss);
-		List<int> selectSecondMove(int iter, TabuStruct &tss, int sp = -1);  // sp=-1 表示第一种邻域没选出合法分区
+		List<int> selectSecondMove(int iter, TabuStruct &tss, int firstPart);
 		
 		int getObj(GraphPartition &gp);
 		int getObj(std::shared_ptr<GraphAdjList> &p2G, const List<int> &nodesPart);
@@ -388,6 +394,7 @@ namespace szx {
 		Problem::Output output;
 		struct {
 			int partnum = 8;
+			int bestObj;
 			double imbalance;
 		}aux;
 

@@ -188,13 +188,16 @@ namespace szx {
 	void Solver::solve() {
 		cout << "begin coarsen graph" << endl;
 		coarsenGraph();
+
 		cout << "begin initial partition" << endl;
-		GraphPartition gp(graphList.back(), aux.partnum);
+		GraphPartition gp(graphList.back(), aux.partnum, graphList.size() - 1);
 		initialPartition(gp);
 		cout << "obj of initial sol: " << getObj(gp) << endl;
+
 		cout << "begin optimize initial sol" << endl;
 		its(gp);
 		cout << "obj of optimized initial sol: " << getObj(gp) << endl;
+
 		cout << "begin uncoarsen graph" << endl;
 		uncoarsen(gp);
 		output.obj = getObj(gp);
@@ -206,6 +209,8 @@ namespace szx {
 			nodepart[i] = gp.nodesPart[i];
 		}
 		aux.imbalance = getImbalance(gp);
+
+		cout << "partnum = " << aux.partnum << ", imbalance = " << aux.imbalance << endl;
 	}
 
 	template<class ForwardIt, class T>
@@ -216,7 +221,7 @@ namespace szx {
 		return last;
 	}
 
-	void Solver::coarsenGraph1() {
+	void Solver::coarsenGraph() {
 		const auto &inputNodes(*input.mutable_nodes());
 		const auto &inputEdges(*input.mutable_edges());
 		// protobuf 格式转内部数据结构
@@ -229,7 +234,7 @@ namespace szx {
 			curEdges[{it->beg(), it->end()}] = it->wgt();
 		}
 
-		while (curNodes.size() > 200) {
+		while (curNodes.size() > 100) {
 			// 构造当前图的邻接表
 			auto pGraph = std::make_shared<GraphAdjList>(curNodes, curEdges);
 			graphList.push_back(pGraph);
@@ -279,7 +284,7 @@ namespace szx {
 		graphList.push_back(pGraph);
 	}
 
-	void Solver::coarsenGraph() {
+	void Solver::coarsenGraphImpv() {
 		const auto &inputNodes(*input.mutable_nodes());
 		const auto &inputEdges(*input.mutable_edges());
 		// protobuf 格式转内部数据结构
@@ -358,7 +363,7 @@ namespace szx {
 
 	void Solver::uncoarsen(GraphPartition &gp) {
 		for (int level = graphList.size() - 2; level >= 0; --level) {
-			GraphPartition curgp(graphList[level], aux.partnum);
+			GraphPartition curgp(graphList[level], aux.partnum, level);
 			for (int v = 0; v < curgp.nodeNum; ++v) {
 				curgp.nodesPart[v] = gp.nodesPart[nodeMap[level][v]];
 			}
@@ -383,14 +388,39 @@ namespace szx {
 		}
 	}
 
-	List<int> Solver::selectSingleMove(int iter, TabuStruct &tss) {
-		List<int> candPart;
-		for (int k = 0; k < tss.partNum; ++k) {
-			if (tss.partWgts[k] != tss.maxPartWgt) { candPart.push_back(k); }
-		}
-		if (candPart.empty()) { return {}; }
-		int randPart = candPart[rand.pick(candPart.size())];
 
+	int Solver::findPart(TabuStruct &tss) {
+		int maxPart = 0, maxWgt = tss.partWgts[0];
+		int randPart = rand.pick(aux.partnum);
+		for (int i = 1; i < aux.partnum; ++i) {
+			if (maxWgt < tss.partWgts[i]) {
+				maxPart = i;
+				maxWgt = tss.partWgts[i];
+			}
+		}
+		while (randPart == maxPart) {
+			randPart = rand.pick(aux.partnum);
+		}
+		return randPart;
+	}
+
+	int Solver::findSecondPart(TabuStruct &tss, int firstPart) {
+		int maxPart = 0, maxWgt = tss.partWgts[0];
+		int randPart = rand.pick(aux.partnum);
+		for (int i = 1; i < aux.partnum; ++i) {
+			if (maxWgt < tss.partWgts[i]) {
+				maxPart = i;
+				maxWgt = tss.partWgts[i];
+			}
+		}
+		while (randPart == maxPart || randPart == firstPart) {
+			randPart = rand.pick(aux.partnum);
+		}
+		return randPart;
+	}
+
+	List<int> Solver::selectSingleMove(int iter, TabuStruct &tss) {
+		int randPart = findPart(tss);
 		List<int> cand;
 		auto &buckets = tss.bktStruct.bktArrList[randPart].buckets;
 		int g = tss.bktStruct.bktArrList[randPart].maxGain;
@@ -398,7 +428,7 @@ namespace szx {
 			for (auto it = buckets[g].begin(); it != buckets[g].end(); ++it) {
 				if (tss.partWgts[tss.vpmap[*it]] > tss.partWgts[randPart]) {
 					// 对目标函数有改进或未被禁忌
-					if (g > buckets.size() / 2 || iter > tss.tabuTable[*it][randPart]) {
+					if (tss.curObj - (g - tss.maxIndex) < aux.bestObj || iter >= tss.tabuTable[*it][randPart]) {
 						cand.push_back(*it);
 					}
 				}
@@ -406,10 +436,11 @@ namespace szx {
 			if (!cand.empty()) { break; }
 			--g;
 		}
-		if (cand.empty()) { return {}; }
-		if (g > buckets.size() / 2) {
-			return { cand[rand.pick(cand.size())],randPart,g };
-		}
+
+		if (cand.empty()) return { -1,randPart,-1 };
+		//if (tss.curObj - (g - tss.maxIndex) < aux.bestObj) {
+		//	return { cand[rand.pick(cand.size())],randPart,g };
+		//}
 
 		int oldest = cand[0];
 		for (int i = 1; i < cand.size(); ++i) {
@@ -424,26 +455,15 @@ namespace szx {
 		return { oldest,randPart,g };
 	}
 
-	List<int> Solver::selectSecondMove(int iter, TabuStruct &tss, int sp) {
-		List<int> candPart;
-		for (int k = 0; k < tss.partNum; ++k) {
-			if (tss.partWgts[k] == tss.maxPartWgt) { candPart.push_back(k); }
-		}
-		int maxPart = candPart[rand.pick(candPart.size())];
-		candPart.clear();
-		for (int k = 0; k < tss.partNum; ++k) {
-			if (k != maxPart && k != sp) { candPart.push_back(k); }
-		}
-		int randPart = candPart[rand.pick(candPart.size())];
-
+	List<int> Solver::selectSecondMove(int iter, TabuStruct &tss, int firstPart) {
+		int secondPart = findSecondPart(tss, firstPart);
 		List<int> cand;
-		auto &buckets = tss.bktStruct.bktArrList[randPart].buckets;
-		int g = tss.bktStruct.bktArrList[randPart].maxGain;
+		auto &buckets = tss.bktStruct.bktArrList[secondPart].buckets;
+		int g = tss.bktStruct.bktArrList[secondPart].maxGain;
 		while (g >= 0) {
 			for (auto it = buckets[g].begin(); it != buckets[g].end(); ++it) {
-				if (tss.vpmap[*it] != sp) {
-					// 对目标函数有改进或未被禁忌
-					if (g > buckets.size() / 2 || iter > tss.tabuTable[*it][randPart]) {
+				if (tss.vpmap[*it] != firstPart) {
+					if (tss.curObj - (g - tss.maxIndex) < aux.bestObj || iter >= tss.tabuTable[*it][secondPart]) {
 						cand.push_back(*it);
 					}
 				}
@@ -451,27 +471,25 @@ namespace szx {
 			if (!cand.empty()) { break; }
 			--g;
 		}
-		if (cand.empty()) { return {}; }
-		if (g > buckets.size() / 2) {
-			return { cand[rand.pick(cand.size())],randPart,g };
-		}
+
+		if (cand.empty()) return { -1,secondPart,-1 };
 
 		int oldest = cand[0];
 		for (int i = 1; i < cand.size(); ++i) {
 			if (tss.lastMvIter[cand[i]] < tss.lastMvIter[oldest]) { oldest = cand[i]; }
 			else if (tss.lastMvIter[cand[i]] == tss.lastMvIter[oldest]) {
-				//选移动后差最小的
-				int minDiff = abs(tss.partWgts[tss.vpmap[oldest]] - 2 * tss.G->nodes[oldest].vWgt - tss.partWgts[randPart]);
-				int diff = abs(tss.partWgts[tss.vpmap[cand[i]]] - 2 * tss.G->nodes[cand[i]].vWgt - tss.partWgts[randPart]);
+				int minDiff = abs(tss.partWgts[tss.vpmap[oldest]] - 2 * tss.G->nodes[oldest].vWgt - tss.partWgts[secondPart]);
+				int diff = abs(tss.partWgts[tss.vpmap[cand[i]]] - 2 * tss.G->nodes[cand[i]].vWgt - tss.partWgts[secondPart]);
 				if (diff < minDiff) { oldest = cand[i]; }
 			}
 		}
-		return { oldest,randPart,g };
+		return { oldest,secondPart,g };
 	}
 
 	// 将 node 节点从原来的分区移动到 target 分区
-	void Solver::execMove(TabuStruct &tss, int node, int target, int gain) {
-		int src = tss.vpmap[node];
+	void Solver::execMove(int iter, TabuStruct &tss, List<int> &mv, bool enTabu) {
+		if (mv[0] < 0) return;
+		int node = mv[0], target = mv[1], gain = mv[2], src = tss.vpmap[node];
 		if (gain >= 0) { tss.curObj -= (gain - tss.maxIndex); }
 		tss.vpmap[node] = target;
 		tss.curParts[src].erase(node);
@@ -480,11 +498,10 @@ namespace szx {
 		tss.partWgts[target] += tss.G->nodes[node].vWgt;
 		tss.maxPartWgt = *std::max_element(tss.partWgts.begin(), tss.partWgts.end());
 
-		//if (gain >= 0) {
-		//	int diff = tss.curObj - getObj(tss.G, tss.vpmap);
-		//	if (diff != 0)
-		//		cout << "diff=" << diff << endl;
-		//}
+		if (enTabu) {
+			tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * 0.3 + rand.pick(3);
+			tss.lastMvIter[node] = iter;
+		}
 
 		// 更新 borNodesOfPart
 		tss.borNodesOfPart[target].erase(node);
@@ -533,8 +550,35 @@ namespace szx {
 		}
 	}
 
-	void Solver::perturbation(TabuStruct &tss) {
-		int ptbWgt = 0.02*input.nodes_size();
+	void Solver::perturbation(int iter, TabuStruct &tss, int level) {
+		int strength = 0.02 * tss.nodeNum;
+		int randPart = -1, randNode = -1;
+		List<int> mv;
+		for (int t = 0; t < strength; ++t) {
+			randPart = findPart(tss);
+			randNode = rand.pick(tss.nodeNum);
+			if (level != 0) {
+				while (tss.vpmap[randNode] == randPart || tss.partWgts[tss.vpmap[randNode]] < tss.partWgts[randPart]) {
+					randNode = rand.pick(tss.nodeNum);
+				}
+				mv = { randNode,randPart,-1 };
+				execMove(iter, tss, mv);
+			}
+			else {
+				while (tss.vpmap[randNode] == randPart) {
+					if (tss.partWgts[tss.vpmap[randNode]] - 2 * tss.G->nodes[tss.vpmap[randNode]].vWgt >= tss.partWgts[randPart])
+						break;
+					randNode = rand.pick(tss.nodeNum);
+				}
+				mv = { randNode,randPart,-1 };
+				execMove(iter, tss, mv);
+			}
+		}
+		tss.curObj = getObj(tss.G, tss.vpmap); // 更新 curObj
+	}
+
+	void Solver::oldPerturb(int iter, TabuStruct &tss) {
+		int ptbWgt = 0.02 * tss.nodeNum;
 		for (int t = 0; t < ptbWgt; ++t) {
 			List<int> candPart;
 			for (int k = 0; k < tss.partNum; ++k) {
@@ -562,131 +606,68 @@ namespace szx {
 					if (r == 0) { randNode = *it; }
 				}
 			}
-			execMove(tss, randNode, randPart); // 未更新 curObj
+			//execMove(iter, tss, List<int>{randNode, randPart, -1}, false);
+			execMove(iter, tss, List<int>{randNode, randPart, -1});
 		}
-		tss.tabuTable.assign(tss.nodeNum, List<int>(tss.partNum, 0)); // 扰动后禁忌表置零
+		//tss.tabuTable.assign(tss.nodeNum, List<int>(tss.partNum, 0)); // 扰动后禁忌表置零
 		tss.curObj = getObj(tss.G, tss.vpmap); // 更新 curObj
 	}
 
-	void Solver::its(GraphPartition &gp) {
-		long iterCount = 20 * gp.nodeNum;
-		List<double> alpha = { 0.05,0.1,0.2,0.3 };
-		int noImprove1 = 0.005*input.nodes_size(), noImprove2 = noImprove1;
-		int noImprove = noImprove1 + noImprove2;
-
-		int maxAdjWgt = 0; // 各节点边权和的最大值, 作为桶的最大编号
-		for (const auto &node : gp.p2G->nodes) {
-			if (node.adjWgt > maxAdjWgt) { maxAdjWgt = node.adjWgt; }
+	int Solver::getBalanceQuality(TabuStruct &tss) {
+		int bq = 0;
+		int div = input.nodes_size() / aux.partnum;
+		int vmp = input.nodes_size() % aux.partnum;
+		for (int i = 0; i < aux.partnum; ++i) {
+			if (vmp != 0 && tss.partWgts[i] != (div + 1) && tss.partWgts[i] != div)
+				bq += abs(div - tss.partWgts[i]);
+			else if (vmp == 0)
+				bq += abs(div - tss.partWgts[i]);
 		}
-		int bestObj = getObj(gp);
-		TabuStruct tss(gp, maxAdjWgt, bestObj);
-		tss.initDataStrcut();
-		int maxPartWgt = tss.maxPartWgt;
-
-		// 迭代禁忌搜索 N1-N2 token-ring
-		for (long iter = 0; iter < iterCount;) {
-			for (long step = 0; step < noImprove && iter < iterCount;) {
-				for (long step1 = 0; step1 < noImprove1 && iter < iterCount;) {
-					List<int> smv = selectSingleMove(iter, tss);
-					if(smv.empty()){
-						step = noImprove;
-						break;
-					}
-					int node = smv[0], target = smv[1], gain = smv[2], src = tss.vpmap[node];
-					execMove(tss, node, target, gain);
-					tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-					tss.lastMvIter[node] = iter;
-					++step1, ++step, ++iter;
-					// at least as good as bestPart in terms of the optimization objective and partition balance
-					if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
-						bestObj = tss.curObj;
-						maxPartWgt = tss.maxPartWgt;
-						gp.nodesPart = tss.vpmap;
-						step1 = step = 0;
-					}
-				}
-				if (iter >= iterCount || step >= noImprove) { break; }
-				for (long step2 = 0; step2 < noImprove2 && iter < iterCount;) {
-					// 先执行 SingleMove
-					List<int> smv = selectSingleMove(iter, tss);
-					if (!smv.empty()) {
-						int node = smv[0], target = smv[1], gain = smv[2], src = tss.vpmap[node];
-						execMove(tss, node, target, gain);
-						tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-						tss.lastMvIter[node] = iter;
-					}
-					int sp = smv.empty() ? -1 : smv[1];
-					List<int> dmv = selectSecondMove(iter, tss, sp);
-					if (dmv.empty()) {
-						step = noImprove;
-						break;
-					}
-					int node = dmv[0], target = dmv[1], gain = dmv[2], src = tss.vpmap[node];
-					execMove(tss, node, target, gain);
-					tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-					tss.lastMvIter[node] = iter;
-					++step2, ++step, ++iter;
-					if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
-						bestObj = tss.curObj;
-						maxPartWgt = tss.maxPartWgt;
-						gp.nodesPart = tss.vpmap;
-						step2 = step = 0;
-					}
-				}
-			}
-			if (iter < iterCount) {
-				perturbation(tss);
-				if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
-					bestObj = tss.curObj;
-					maxPartWgt = tss.maxPartWgt;
-					gp.nodesPart = tss.vpmap;
-				}
-			}
-		}
+		return bq;
 	}
 
-	void Solver::its_1m(GraphPartition &gp) {
-		long iterCount = 20 * input.nodes_size();
-		List<double> alpha = { 0.05,0.1,0.2,0.3 };
+	void Solver::its(GraphPartition &gp) {
+		long maxIter = (2 * gp.level + 1) * gp.nodeNum;
+		//List<double> alpha = { 0.05,0.1,0.2,0.3 };
+		int smallOptCnt = 20, bigOptCnt = 0.1*gp.nodeNum;
 
 		int maxAdjWgt = 0; // 各节点边权和的最大值, 作为桶的最大编号
 		for (const auto &node : gp.p2G->nodes) {
 			if (node.adjWgt > maxAdjWgt) { maxAdjWgt = node.adjWgt; }
 		}
-		int bestObj = getObj(gp);
-		TabuStruct tss(gp, maxAdjWgt, bestObj);
+		aux.bestObj = getObj(gp);
+		TabuStruct tss(gp, maxAdjWgt, aux.bestObj);
 		tss.initDataStrcut();
-		int maxPartWgt = tss.maxPartWgt;
+		int bestBalance = getBalanceQuality(tss);
 
-		int noImprove = 0.01*input.nodes_size();
-		for (long iter = 0; iter < iterCount;) {
-			for (long step = 0; step < noImprove && iter < iterCount;) {
-				List<int> smv = selectSingleMove(iter, tss);
-				if (smv.empty()) {
-					int minWgt = *min_element(tss.partWgts.begin(), tss.partWgts.end());
-					break;
-				}
-				int node = smv[0], target = smv[1], gain = smv[2], src = tss.vpmap[node];
-				execMove(tss, node, target, gain);
-				tss.tabuTable[node][src] = iter + tss.borNodesOfPart[src].size() * alpha[rand.pick(alpha.size())] + rand.pick(3);
-				tss.lastMvIter[node] = iter;
-				++step, ++iter;
-				// at least as good as bestPart in terms of the optimization objective and partition balance
-				if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
-					bestObj = tss.curObj;
-					maxPartWgt = tss.maxPartWgt;
-					gp.nodesPart = tss.vpmap;
-					step = 0;
-				}
+		int localOpt1 = 0, localOpt2 = 0, noImpv = 0;
+		// 迭代禁忌搜索 N1-N2 token-ring
+		for (long iter = 0; iter < maxIter; ++iter) {
+			List<int> smv = selectSingleMove(iter, tss);
+			if (localOpt1 < smallOptCnt) {
+				if (aux.bestObj < tss.curObj) { ++localOpt1; }
+				execMove(iter, tss, smv);
 			}
-			if (iter < iterCount) {
-				perturbation(tss);
-				if (tss.curObj <= bestObj && tss.maxPartWgt <= maxPartWgt) {
-					bestObj = tss.curObj;
-					maxPartWgt = tss.maxPartWgt;
-					gp.nodesPart = tss.vpmap;
-				}
+			else {
+				if (aux.bestObj < tss.curObj) { ++localOpt2; }
+				List<int> mv2 = selectSecondMove(iter, tss, smv[1]);
+				execMove(iter, tss, smv);
+				execMove(iter, tss, mv2);
+				if (localOpt2 == smallOptCnt) { localOpt1 = localOpt2 = 0; }
 			}
+
+			int bq = getBalanceQuality(tss);
+			if (tss.curObj <= aux.bestObj && bq <= bestBalance) {
+				aux.bestObj = tss.curObj;
+				gp.nodesPart = tss.vpmap;
+				noImpv = 0;
+			}
+			if (tss.curObj == aux.bestObj && bq < bestBalance) {
+				bestBalance = bq;
+			}
+			++noImpv;
+			if (noImpv == bigOptCnt) { oldPerturb(iter, tss); }
+			//if (iter % bigOptCnt == 0) { perturbation(iter, tss, gp.level); }
 		}
 	}
 

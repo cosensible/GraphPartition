@@ -105,7 +105,7 @@ namespace szx {
 	void Simulator::debug() {
 		Task task;
 		task.instSet = "";
-		task.instId = "add20";
+		task.instId = "fe_rotor";
 		task.timeout = "600";
 		//task.randSeed = "1559429277";
 		task.randSeed = to_string(Random::generateSeed());
